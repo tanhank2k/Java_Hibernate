@@ -5,14 +5,7 @@
              version="3.0">
   <persistence-unit name="default">
 
-    <class>entity.ClazzEntity</class>
-    <class>entity.CourseEntity</class>
-    <class>entity.CourseregistrationsessionEntity</class>
-    <class>entity.SemesterEntity</class>
-    <class>entity.StudentEntity</class>
-    <class>entity.StudentregistercourseEntity</class>
-    <class>entity.SubjectEntity</class>
-    <class>entity.TeacherEntity</class>
+
     <properties>
       <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/qlkh"/>
       <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>

@@ -1,77 +1,36 @@
 package com.Model;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "subject", schema = "qlkh", catalog = "")
+@Table(name = "subject"  )
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class SubjectEntity {
-    private Integer id;
-    private String subjectCode;
-    private String subjectName;
-    private Integer numberOfCredits;
-    private Collection<CourseEntity> coursesById;
 
     @Id
     @Column(name = "id", nullable = false)
-    public Integer getId() {
-        return id;
-    }
+    private Integer id;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    @Basic
+      
     @Column(name = "subjectCode", nullable = false, length = 255)
-    public String getSubjectCode() {
-        return subjectCode;
-    }
+    private String subjectCode;
 
-    public void setSubjectCode(String subjectCode) {
-        this.subjectCode = subjectCode;
-    }
-
-    @Basic
+      
     @Column(name = "subjectName", nullable = false, length = 255)
-    public String getSubjectName() {
-        return subjectName;
-    }
+    private String subjectName;
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
-    }
-
-    @Basic
+      
     @Column(name = "numberOfCredits", nullable = false)
-    public Integer getNumberOfCredits() {
-        return numberOfCredits;
-    }
-
-    public void setNumberOfCredits(Integer numberOfCredits) {
-        this.numberOfCredits = numberOfCredits;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SubjectEntity that = (SubjectEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(subjectCode, that.subjectCode) && Objects.equals(subjectName, that.subjectName) && Objects.equals(numberOfCredits, that.numberOfCredits);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, subjectCode, subjectName, numberOfCredits);
-    }
+    private Integer numberOfCredits;
 
     @OneToMany(mappedBy = "subjectByIdSubject")
-    public Collection<CourseEntity> getCoursesById() {
-        return coursesById;
-    }
-
-    public void setCoursesById(Collection<CourseEntity> coursesById) {
-        this.coursesById = coursesById;
-    }
+    private Collection<CourseEntity> coursesById;
 }

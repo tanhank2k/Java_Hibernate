@@ -1,18 +1,33 @@
 package com.company;
+import com.fasterxml.classmate.AnnotationConfiguration;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 import javax.swing.*;
+import java.util.List;
+
 public class Main {
-
+    //private static  SessionFactory factory;
     public static void main(String[] args) {
-	// write your code here
-        JFrame jFrame = new JFrame();
-        JButton jButton = new JButton("Click");
-        jButton.setBounds(130,50,100,40);
+	 try {
+         SessionFactory factory = new Configuration().configure().buildSessionFactory();
 
-        jFrame.setTitle("Test");
-        jFrame.add(jButton);
+         Session session = factory.openSession();
+         String hql = "From SemesterEntity";
+         Query query = session.createQuery(hql);
+         List results = query.list();
 
-        jFrame.setSize(400,200);
-        jFrame.setLayout(null);
-        jFrame.setVisible(true);
+         for (var semester:results) {
+             System.out.println(semester);
+         }
+     }catch (Throwable ex){
+	     ex.printStackTrace();
+     }
+
+
     }
+
+
+
 }
