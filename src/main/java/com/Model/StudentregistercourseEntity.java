@@ -1,4 +1,4 @@
-package entity;
+package com.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -20,7 +20,7 @@ public class StudentregistercourseEntity {
     private CourseEntity courseByIdCourse;
 
     @Basic
-    @Column(name = "idStudent")
+    @Column(name = "idStudent", nullable = true)
     public Integer getIdStudent() {
         return idStudent;
     }
@@ -30,7 +30,7 @@ public class StudentregistercourseEntity {
     }
 
     @Basic
-    @Column(name = "MSSV")
+    @Column(name = "MSSV", nullable = true)
     public Integer getMssv() {
         return mssv;
     }
@@ -40,7 +40,7 @@ public class StudentregistercourseEntity {
     }
 
     @Basic
-    @Column(name = "studentName")
+    @Column(name = "studentName", nullable = true, length = 255)
     public String getStudentName() {
         return studentName;
     }
@@ -50,7 +50,7 @@ public class StudentregistercourseEntity {
     }
 
     @Basic
-    @Column(name = "idCourse")
+    @Column(name = "idCourse", nullable = true)
     public Integer getIdCourse() {
         return idCourse;
     }
@@ -60,7 +60,7 @@ public class StudentregistercourseEntity {
     }
 
     @Basic
-    @Column(name = "subjectCode")
+    @Column(name = "subjectCode", nullable = true, length = 255)
     public String getSubjectCode() {
         return subjectCode;
     }
@@ -70,7 +70,7 @@ public class StudentregistercourseEntity {
     }
 
     @Basic
-    @Column(name = "subjectName")
+    @Column(name = "subjectName", nullable = true, length = 255)
     public String getSubjectName() {
         return subjectName;
     }
@@ -80,7 +80,7 @@ public class StudentregistercourseEntity {
     }
 
     @Basic
-    @Column(name = "teacherName")
+    @Column(name = "teacherName", nullable = true, length = 255)
     public String getTeacherName() {
         return teacherName;
     }
@@ -90,7 +90,7 @@ public class StudentregistercourseEntity {
     }
 
     @Basic
-    @Column(name = "timeOnSchool")
+    @Column(name = "timeOnSchool", nullable = true, length = 128)
     public String getTimeOnSchool() {
         return timeOnSchool;
     }
@@ -100,7 +100,7 @@ public class StudentregistercourseEntity {
     }
 
     @Basic
-    @Column(name = "timeRegister")
+    @Column(name = "timeRegister", nullable = true)
     public Timestamp getTimeRegister() {
         return timeRegister;
     }

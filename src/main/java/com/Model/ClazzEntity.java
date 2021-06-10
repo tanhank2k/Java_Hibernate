@@ -1,4 +1,4 @@
-package entity;
+package com.Model;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -15,7 +15,7 @@ public class ClazzEntity {
     private Collection<StudentEntity> studentsById;
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     public Integer getId() {
         return id;
     }
@@ -25,7 +25,7 @@ public class ClazzEntity {
     }
 
     @Basic
-    @Column(name = "className")
+    @Column(name = "className", nullable = false, length = 255)
     public String getClassName() {
         return className;
     }
@@ -35,7 +35,7 @@ public class ClazzEntity {
     }
 
     @Basic
-    @Column(name = "totalStudent")
+    @Column(name = "totalStudent", nullable = false)
     public Integer getTotalStudent() {
         return totalStudent;
     }
@@ -45,7 +45,7 @@ public class ClazzEntity {
     }
 
     @Basic
-    @Column(name = "totalMale")
+    @Column(name = "totalMale", nullable = false)
     public Integer getTotalMale() {
         return totalMale;
     }
@@ -55,7 +55,7 @@ public class ClazzEntity {
     }
 
     @Basic
-    @Column(name = "totalFeMale")
+    @Column(name = "totalFeMale", nullable = false)
     public Integer getTotalFeMale() {
         return totalFeMale;
     }

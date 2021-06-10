@@ -1,4 +1,4 @@
-package entity;
+package com.Model;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -14,7 +14,7 @@ public class CourseregistrationsessionEntity {
     private SemesterEntity semesterByIdSemester;
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     public Integer getId() {
         return id;
     }
@@ -24,7 +24,7 @@ public class CourseregistrationsessionEntity {
     }
 
     @Basic
-    @Column(name = "idSemester")
+    @Column(name = "idSemester", nullable = true)
     public Integer getIdSemester() {
         return idSemester;
     }
@@ -34,7 +34,7 @@ public class CourseregistrationsessionEntity {
     }
 
     @Basic
-    @Column(name = "dateStart")
+    @Column(name = "dateStart", nullable = false)
     public Date getDateStart() {
         return dateStart;
     }
@@ -44,7 +44,7 @@ public class CourseregistrationsessionEntity {
     }
 
     @Basic
-    @Column(name = "dateEnd")
+    @Column(name = "dateEnd", nullable = false)
     public Date getDateEnd() {
         return dateEnd;
     }

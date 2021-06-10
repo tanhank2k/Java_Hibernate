@@ -1,4 +1,4 @@
-package entity;
+package com.Model;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -17,7 +17,7 @@ public class SemesterEntity {
     private Collection<CourseregistrationsessionEntity> courseregistrationsessionsById;
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     public Integer getId() {
         return id;
     }
@@ -27,7 +27,7 @@ public class SemesterEntity {
     }
 
     @Basic
-    @Column(name = "semesterName")
+    @Column(name = "semesterName", nullable = false, length = 255)
     public String getSemesterName() {
         return semesterName;
     }
@@ -37,7 +37,7 @@ public class SemesterEntity {
     }
 
     @Basic
-    @Column(name = "year")
+    @Column(name = "year", nullable = false)
     public Object getYear() {
         return year;
     }
@@ -47,7 +47,7 @@ public class SemesterEntity {
     }
 
     @Basic
-    @Column(name = "dateStart")
+    @Column(name = "dateStart", nullable = false)
     public Date getDateStart() {
         return dateStart;
     }
@@ -57,7 +57,7 @@ public class SemesterEntity {
     }
 
     @Basic
-    @Column(name = "dateEnd")
+    @Column(name = "dateEnd", nullable = false)
     public Date getDateEnd() {
         return dateEnd;
     }

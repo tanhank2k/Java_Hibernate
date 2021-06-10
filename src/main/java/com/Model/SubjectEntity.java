@@ -1,4 +1,4 @@
-package entity;
+package com.Model;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -14,7 +14,7 @@ public class SubjectEntity {
     private Collection<CourseEntity> coursesById;
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     public Integer getId() {
         return id;
     }
@@ -24,7 +24,7 @@ public class SubjectEntity {
     }
 
     @Basic
-    @Column(name = "subjectCode")
+    @Column(name = "subjectCode", nullable = false, length = 255)
     public String getSubjectCode() {
         return subjectCode;
     }
@@ -34,7 +34,7 @@ public class SubjectEntity {
     }
 
     @Basic
-    @Column(name = "subjectName")
+    @Column(name = "subjectName", nullable = false, length = 255)
     public String getSubjectName() {
         return subjectName;
     }
@@ -44,7 +44,7 @@ public class SubjectEntity {
     }
 
     @Basic
-    @Column(name = "numberOfCredits")
+    @Column(name = "numberOfCredits", nullable = false)
     public Integer getNumberOfCredits() {
         return numberOfCredits;
     }

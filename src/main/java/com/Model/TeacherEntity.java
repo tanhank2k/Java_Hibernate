@@ -1,4 +1,4 @@
-package entity;
+package com.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -17,7 +17,7 @@ public class TeacherEntity {
     private String address;
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     public Integer getId() {
         return id;
     }
@@ -27,7 +27,7 @@ public class TeacherEntity {
     }
 
     @Basic
-    @Column(name = "username")
+    @Column(name = "username", nullable = false, length = 255)
     public String getUsername() {
         return username;
     }
@@ -37,7 +37,7 @@ public class TeacherEntity {
     }
 
     @Basic
-    @Column(name = "password")
+    @Column(name = "password", nullable = false, length = 255)
     public String getPassword() {
         return password;
     }
@@ -47,7 +47,7 @@ public class TeacherEntity {
     }
 
     @Basic
-    @Column(name = "teacherName")
+    @Column(name = "teacherName", nullable = false, length = 255)
     public String getTeacherName() {
         return teacherName;
     }
@@ -57,7 +57,7 @@ public class TeacherEntity {
     }
 
     @Basic
-    @Column(name = "dateOfBitrh")
+    @Column(name = "dateOfBitrh", nullable = true)
     public Timestamp getDateOfBitrh() {
         return dateOfBitrh;
     }
@@ -67,7 +67,7 @@ public class TeacherEntity {
     }
 
     @Basic
-    @Column(name = "position")
+    @Column(name = "position", nullable = true, length = 255)
     public String getPosition() {
         return position;
     }
@@ -77,7 +77,7 @@ public class TeacherEntity {
     }
 
     @Basic
-    @Column(name = "phone")
+    @Column(name = "phone", nullable = true, length = 25)
     public String getPhone() {
         return phone;
     }
@@ -87,7 +87,7 @@ public class TeacherEntity {
     }
 
     @Basic
-    @Column(name = "address")
+    @Column(name = "address", nullable = true, length = 255)
     public String getAddress() {
         return address;
     }

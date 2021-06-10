@@ -1,4 +1,4 @@
-package entity;
+package com.Model;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -23,7 +23,7 @@ public class CourseEntity {
     private Collection<StudentregistercourseEntity> studentregistercoursesById;
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     public Integer getId() {
         return id;
     }
@@ -33,7 +33,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "idSemester")
+    @Column(name = "idSemester", nullable = true)
     public Integer getIdSemester() {
         return idSemester;
     }
@@ -43,7 +43,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "semesterName")
+    @Column(name = "semesterName", nullable = true, length = 255)
     public String getSemesterName() {
         return semesterName;
     }
@@ -53,7 +53,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "idSubject")
+    @Column(name = "idSubject", nullable = true)
     public Integer getIdSubject() {
         return idSubject;
     }
@@ -63,7 +63,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "subjectCode")
+    @Column(name = "subjectCode", nullable = false, length = 255)
     public String getSubjectCode() {
         return subjectCode;
     }
@@ -73,7 +73,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "subjectName")
+    @Column(name = "subjectName", nullable = false, length = 255)
     public String getSubjectName() {
         return subjectName;
     }
@@ -83,7 +83,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "numberOfCredits")
+    @Column(name = "numberOfCredits", nullable = false)
     public Integer getNumberOfCredits() {
         return numberOfCredits;
     }
@@ -93,7 +93,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "teacherName")
+    @Column(name = "teacherName", nullable = false, length = 255)
     public String getTeacherName() {
         return teacherName;
     }
@@ -103,7 +103,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "roomName")
+    @Column(name = "roomName", nullable = true, length = 255)
     public String getRoomName() {
         return roomName;
     }
@@ -113,7 +113,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "dateOnSchool")
+    @Column(name = "dateOnSchool", nullable = true, length = 255)
     public String getDateOnSchool() {
         return dateOnSchool;
     }
@@ -123,7 +123,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "period")
+    @Column(name = "period", nullable = true)
     public Integer getPeriod() {
         return period;
     }

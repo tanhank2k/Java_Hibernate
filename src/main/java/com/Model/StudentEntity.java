@@ -1,4 +1,4 @@
-package entity;
+package com.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -21,7 +21,7 @@ public class StudentEntity {
     private Collection<StudentregistercourseEntity> studentregistercoursesById;
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     public Integer getId() {
         return id;
     }
@@ -31,7 +31,7 @@ public class StudentEntity {
     }
 
     @Basic
-    @Column(name = "username")
+    @Column(name = "username", nullable = false, length = 255)
     public String getUsername() {
         return username;
     }
@@ -41,7 +41,7 @@ public class StudentEntity {
     }
 
     @Basic
-    @Column(name = "password")
+    @Column(name = "password", nullable = false, length = 255)
     public String getPassword() {
         return password;
     }
@@ -51,7 +51,7 @@ public class StudentEntity {
     }
 
     @Basic
-    @Column(name = "studentName")
+    @Column(name = "studentName", nullable = false, length = 255)
     public String getStudentName() {
         return studentName;
     }
@@ -61,7 +61,7 @@ public class StudentEntity {
     }
 
     @Basic
-    @Column(name = "MSSV")
+    @Column(name = "MSSV", nullable = false, length = 255)
     public String getMssv() {
         return mssv;
     }
@@ -71,7 +71,7 @@ public class StudentEntity {
     }
 
     @Basic
-    @Column(name = "dateOfBitrh")
+    @Column(name = "dateOfBitrh", nullable = true)
     public Timestamp getDateOfBitrh() {
         return dateOfBitrh;
     }
@@ -81,7 +81,7 @@ public class StudentEntity {
     }
 
     @Basic
-    @Column(name = "class")
+    @Column(name = "class", nullable = true)
     public Integer getClazz() {
         return clazz;
     }
@@ -91,7 +91,7 @@ public class StudentEntity {
     }
 
     @Basic
-    @Column(name = "phone")
+    @Column(name = "phone", nullable = true, length = 255)
     public String getPhone() {
         return phone;
     }
@@ -101,7 +101,7 @@ public class StudentEntity {
     }
 
     @Basic
-    @Column(name = "address")
+    @Column(name = "address", nullable = true, length = 255)
     public String getAddress() {
         return address;
     }

@@ -1,15 +1,33 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE hibernate-configuration PUBLIC
-    "-//Hibernate/Hibernate Configuration DTD//EN"
-    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <property name="connection.url"/>
-    <property name="connection.driver_class"/>
-    <!-- <property name="connection.username"/> -->
-    <!-- <property name="connection.password"/> -->
+    <property name="connection.url">jdbc:mysql://localhost:3306/qlkh</property>
+    <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+    <property name="connection.username">
+      root
+    </property>
+    <property name="connection.password">
+      11111111
+    </property>
+    <mapping resource="ClazzEntity.hbm.xml"/>
+    <mapping class="com.Model.ClazzEntity"/>
+    <mapping resource="CourseEntity.hbm.xml"/>
+    <mapping class="com.Model.CourseEntity"/>
+    <mapping resource="CourseregistrationsessionEntity.hbm.xml"/>
+    <mapping class="com.Model.CourseregistrationsessionEntity"/>
+    <mapping class="com.Model.SemesterEntity"/>
+    <mapping resource="SemesterEntity.hbm.xml"/>
+    <mapping resource="StudentEntity.hbm.xml"/>
+    <mapping class="com.Model.StudentEntity"/>
+    <mapping resource="StudentregistercourseEntity.hbm.xml"/>
+    <mapping class="com.Model.StudentregistercourseEntity"/>
+    <mapping resource="SubjectEntity.hbm.xml"/>
+    <mapping class="com.Model.SubjectEntity"/>
+    <mapping class="com.Model.TeacherEntity"/>
+    <mapping resource="TeacherEntity.hbm.xml"/>
 
-    <!-- DB schema will be updated if needed -->
-    <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
   </session-factory>
 </hibernate-configuration>
