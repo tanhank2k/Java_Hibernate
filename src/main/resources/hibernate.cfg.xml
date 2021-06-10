@@ -12,16 +12,16 @@
     <property name="connection.password">
       11111111
     </property>
-    <property name="hbm2ddl.auto">create-drop</property>
+    <property name="hbm2ddl.auto">update</property>
+    <property name="hibernate.show_sql">true</property>
+
 
     <mapping class="com.Model.CourseEntity"/>
     <mapping class="com.Model.StudentEntity"/>
     <mapping class="com.Model.StudentregistercourseEntity"/>
     <mapping class="com.Model.ClazzEntity"/>
-
     <mapping class="com.Model.CourseregistrationsessionEntity"/>
     <mapping class="com.Model.SemesterEntity"/>
-
     <mapping class="com.Model.SubjectEntity"/>
     <mapping class="com.Model.TeacherEntity"/>
 

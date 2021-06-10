@@ -14,10 +14,10 @@ import java.io.Serializable;
 public class StudentregistercourseID implements Serializable {
     @ManyToOne
     @JoinColumn(name = "idStudent")
-    private StudentEntity student;
+    private StudentEntity idStudent;
 
     @ManyToOne
    @JoinColumn(name = "idCourse")
-    private CourseEntity course;
+    private CourseEntity idCourse;
 
 }

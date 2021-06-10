@@ -17,11 +17,7 @@ public class CourseregistrationsessionEntity {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
-    
-      
-    @Column(name = "idSemester", nullable = true)
-    private Integer idSemester;
-    
+
       
     @Column(name = "dateStart", nullable = false)
     private Date dateStart;

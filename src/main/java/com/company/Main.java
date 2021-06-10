@@ -7,6 +7,7 @@ import org.hibernate.query.Query;
 import javax.swing.*;
 import java.util.List;
 
+
 public class Main {
     //private static  SessionFactory factory;
     public static void main(String[] args) {
@@ -18,9 +19,7 @@ public class Main {
          Query query = session.createQuery(hql);
          List results = query.list();
 
-         for (var semester:results) {
-             System.out.println(semester);
-         }
+
      }catch (Throwable ex){
 	     ex.printStackTrace();
      }

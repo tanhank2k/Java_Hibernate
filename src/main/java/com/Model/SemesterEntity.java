@@ -16,6 +16,7 @@ import java.util.Objects;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class SemesterEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
     
@@ -25,7 +26,7 @@ public class SemesterEntity {
     
       
     @Column(name = "year", nullable = false)
-    private Object year;
+    private Integer year;
     
       
     @Column(name = "dateStart", nullable = false)

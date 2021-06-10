@@ -17,6 +17,7 @@ public class CourseEntity {
     @EqualsAndHashCode.Include
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
    
@@ -59,7 +60,7 @@ public class CourseEntity {
     @JoinColumn(name = "idSubject", referencedColumnName = "id")
     private SubjectEntity subjectByIdSubject;
     
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "idCourse")
     private Collection<StudentregistercourseEntity> studentregistercoursesById;
 
 }

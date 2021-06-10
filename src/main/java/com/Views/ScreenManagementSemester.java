@@ -1,5 +1,11 @@
 package com.Views;
 
+import com.Model.SemesterEntity;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -14,6 +20,8 @@ import java.awt.Insets;
 import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.JTextPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JPopupMenu;
 import java.awt.Component;
@@ -26,6 +34,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import javax.swing.JMenuBar;
 import java.awt.SystemColor;
+import java.util.Date;
+import java.util.List;
 import javax.swing.JMenu;
 
 public class ScreenManagementSemester {
@@ -76,18 +86,42 @@ public class ScreenManagementSemester {
         frmScreenManagementSemester.getContentPane().add(scrollPane);
 
         table_2 = new JTable();
-        table_2.setModel(new DefaultTableModel(
-                new Object[][] {
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                },
-                new String[] {
-                        "ID", "Semester", "Year", "DateStart", "DateEnd"
+        //table_2.setEnabled(false);
+        try {
+            SessionFactory factory = new Configuration().configure().buildSessionFactory();
+
+            Session session = factory.openSession();
+            String hql = "From SemesterEntity";
+            Query query = session.createQuery(hql);
+            List<SemesterEntity> results = query.list();
+
+            DefaultTableModel tableModel = new DefaultTableModel(
+                    new Object[][] {},
+                    new String[] {
+                            "ID", "Semester", "Year", "DateStart", "DateEnd"
+                    }){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    //all cells false
+                    return false;
                 }
-        ));
+            };
+            for (var data:results) {
+                int id = data.getId();
+                String Name = data.getSemesterName();
+                int year = data.getYear();
+                Date dateStart = data.getDateStart();
+                Date dateEnd = data.getDateEnd();
+
+                Object [] row = {id,Name,year,dateStart,dateEnd};
+                tableModel.addRow(row);
+            }
+
+            table_2.setModel(tableModel);
+        }catch (Throwable ex){
+            ex.printStackTrace();
+        }
+
         scrollPane.setViewportView(table_2);
 
         JPopupMenu popupMenu = new JPopupMenu();
@@ -106,6 +140,7 @@ public class ScreenManagementSemester {
         btnCreate.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                
             }
         });
         btnCreate.setMargin(new Insets(2, 2, 2, 2));
@@ -189,6 +224,18 @@ public class ScreenManagementSemester {
 
         JMenuItem imenuExit = new JMenuItem("Exit");
         btnTeacherName.add(imenuExit);
+
+        table_2.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                txtID.setText(table_2.getValueAt(table_2.getSelectedRow(),0).toString());
+                txtSemester.setText(table_2.getValueAt(table_2.getSelectedRow(),1).toString());
+                txtYear.setText(table_2.getValueAt(table_2.getSelectedRow(),2).toString());
+                txtDateStart.setText(table_2.getValueAt(table_2.getSelectedRow(),3).toString());
+                txtDateEnd.setText(table_2.getValueAt(table_2.getSelectedRow(),4).toString());
+
+            }
+        });
     }
     private static void addPopup(Component component, final JPopupMenu popup) {
         component.addMouseListener(new MouseAdapter() {

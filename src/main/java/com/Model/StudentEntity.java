@@ -17,6 +17,7 @@ import java.util.Objects;
 public class StudentEntity {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
       
@@ -40,10 +41,6 @@ public class StudentEntity {
     private Timestamp dateOfBitrh;
     
       
-    @Column(name = "class", nullable = true)
-    private Integer clazz;
-    
-      
     @Column(name = "phone", nullable = true, length = 255)
     private String phone;
     
@@ -55,7 +52,7 @@ public class StudentEntity {
     @JoinColumn(name = "class", referencedColumnName = "id")
     private ClazzEntity clazzByClazz;
     
-    @OneToMany(mappedBy = "studentByIdStudent")
+    @OneToMany(mappedBy = "idStudent")
     private Collection<StudentregistercourseEntity> studentregistercoursesById;
 
 }
