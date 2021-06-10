@@ -99,7 +99,7 @@ public class PanelManagementTeacher extends JPanel {
                 txtPassword.setText(table_2.getValueAt(table_2.getSelectedRow(),7).toString());
             }
         });
-
+        table_2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         JPopupMenu popupMenu = new JPopupMenu();
         addPopup(table_2, popupMenu);
 

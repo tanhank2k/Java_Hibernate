@@ -36,7 +36,7 @@ public class MainScreen {
      */
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(100, 100, 786, 386);
+        frame.setBounds(100, 100, 786, 390);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new CardLayout(0,0));
         frame.add(new PanelMainScreenTeacher(frame));

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/qlkh_class_1.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/qlkh_course_1.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/qlkh_courseregistrationsession_1.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/qlkh_semester_1.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/qlkh_student_1.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/qlkh_studentregistercourse_1.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/qlkh_subject_1.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/qlkh_teacher_1.sql" dialect="MySQL" />
+  </component>
+</project>

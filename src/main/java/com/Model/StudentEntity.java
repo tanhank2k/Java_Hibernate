@@ -35,6 +35,9 @@ public class StudentEntity {
       
     @Column(name = "MSSV", nullable = false, length = 255)
     private String mssv;
+
+    @Column(name="Gender", nullable = true,length = 255)
+    private String gender;
     
       
     @Column(name = "dateOfBitrh", nullable = true)

@@ -21,8 +21,8 @@ public class CourseEntity {
     private Integer id;
     
    
-    @Column(name = "semesterName", nullable = true, length = 255)
-    private String semesterName;
+    @Column(name = "studentMaximum", nullable = false)
+    int studentMaximum;
     
     
     @Column(name = "subjectCode", nullable = false, length = 255)

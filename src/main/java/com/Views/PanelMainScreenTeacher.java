@@ -50,6 +50,13 @@ public class PanelMainScreenTeacher extends JPanel {
         gbc_btnCourse.gridx = 1;
         gbc_btnCourse.gridy = 0;
         contentPane.add(btnCourse, gbc_btnCourse);
+        btnCourse.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                jFrame.setContentPane(new PanelManagementCourse(jFrame));
+                jFrame.setVisible(true);
+            }
+        });
 
         JButton btnSubject = new JButton("Management Subject");
         btnSubject.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -60,6 +67,14 @@ public class PanelMainScreenTeacher extends JPanel {
         gbc_btnSubject.gridy = 0;
         contentPane.add(btnSubject, gbc_btnSubject);
 
+        btnSubject.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                jFrame.setContentPane(new PanelManagementSubject());
+                jFrame.setVisible(true);
+            }
+        });
+
         JButton btnClass = new JButton("Management Class");
         btnClass.setFont(new Font("Tahoma", Font.PLAIN, 13));
         GridBagConstraints gbc_btnClass = new GridBagConstraints();
@@ -68,6 +83,14 @@ public class PanelMainScreenTeacher extends JPanel {
         gbc_btnClass.gridx = 0;
         gbc_btnClass.gridy = 1;
         contentPane.add(btnClass, gbc_btnClass);
+
+        btnClass.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                jFrame.setContentPane(new PanelManagementClass(jFrame));
+                jFrame.setVisible(true);
+            }
+        });
 
         JButton btnTeacher = new JButton("Management Teacher");
         btnTeacher.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -113,6 +136,14 @@ public class PanelMainScreenTeacher extends JPanel {
         gbc_btnStudent.gridx = 2;
         gbc_btnStudent.gridy = 2;
         contentPane.add(btnStudent, gbc_btnStudent);
+
+        btnStudent.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                jFrame.setContentPane(new PanelManagementStudent(jFrame));
+                jFrame.setVisible(true);
+            }
+        });
 
     }
 

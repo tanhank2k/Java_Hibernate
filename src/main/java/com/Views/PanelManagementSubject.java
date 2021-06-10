@@ -1,11 +1,15 @@
 package com.Views;
 
+import com.DAO.SubjectDAO;
 import com.DAO.TeacherDAO;
+import com.Model.SubjectEntity;
 import com.Model.TeacherEntity;
 
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -56,7 +60,7 @@ public class PanelManagementSubject extends JPanel {
             public void mouseClicked(MouseEvent e) {
             }
         });
-        List<TeacherEntity> teachers = TeacherDAO.getAllSTeacher();
+
         DefaultTableModel tableModel = new DefaultTableModel(new String[] {
                 "ID", "Subject Name", "Subject Code", "Number of credits"
         },0) {
@@ -67,24 +71,33 @@ public class PanelManagementSubject extends JPanel {
                 return false;
             }
         };
-        for (var teacher:teachers) {
-            int id = teacher.getId();
-            String Name = teacher.getTeacherName();
-            Date DoB = teacher.getDateOfBitrh();
-            String Address = teacher.getAddress();
-            String Phone = teacher.getPhone();
-            String Position = teacher.getPosition();
-            String Username = teacher.getUsername();
-            String Password = teacher.getPassword();
+
+        List<SubjectEntity> subjects = SubjectDAO.getAllSubject();
+        for (var subject:subjects) {
+            int id = subject.getId();
+            String Name = subject.getSubjectName();
+            String code = subject.getSubjectCode();
+            int credits = subject.getNumberOfCredits();
 
 
-            Object[] data = {id, Name, DoB,Address,Phone, Position, Username, Password};
+            Object[] data = {id, Name, code, credits};
 
             tableModel.addRow(data);
 
         }
+        table_2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         table_2.setModel(tableModel);
         scrollPane.setViewportView(table_2);
+
+        table_2.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                txtID.setText(table_2.getValueAt(table_2.getSelectedRow(),0).toString());
+                txtName.setText(table_2.getValueAt(table_2.getSelectedRow(),1).toString());
+                txtCode.setText(table_2.getValueAt(table_2.getSelectedRow(),2).toString());
+                txtCredits.setText(table_2.getValueAt(table_2.getSelectedRow(),3).toString());
+            }
+        });
 
         JPopupMenu popupMenu = new JPopupMenu();
         addPopup(table_2, popupMenu);
