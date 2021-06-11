@@ -1,17 +1,7 @@
 package com.Views;
-
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 
 import java.awt.SystemColor;
 import java.awt.event.MouseAdapter;
@@ -20,19 +10,19 @@ import java.awt.Component;
 import java.awt.Font;
 
 public class PanelManagementSRC extends JPanel {
-    private JTextField textField;
-    private JTextField textField_1;
-    private JTextField textField_2;
-    private JTextField textField_3;
-    private JTextField textField_4;
-    private JTextField textField_5;
-    private JTextField textField_6;
-    private JTextField textField_7;
+    private JTextField txtMSSV;
+    private JTextField txtStudentName;
+    private JTextField txtSubjectCode;
+    private JTextField txtSubjectName;
+    private JTextField txtTeacherName;
+    private JTextField txtStudyTime;
+    private JTextField txtRegistrationTime;
+    private JTextField txtStudent;
 
     /**
      * Create the panel.
      */
-    public PanelManagementSRC() {
+    public PanelManagementSRC(JFrame jFrame) {
         setLayout(null);
 
         JPanel contentPane = new JPanel();
@@ -42,11 +32,15 @@ public class PanelManagementSRC extends JPanel {
         add(contentPane);
 
         JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setBounds(10, 56, 465, 222);
         contentPane.add(scrollPane);
 
+
         JTable table_2 = new JTable();
-        table_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table_2.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        table_2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         table_2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -55,19 +49,19 @@ public class PanelManagementSRC extends JPanel {
         scrollPane.setViewportView(table_2);
         table_2.setModel(new DefaultTableModel(
                 new Object[][] {
-                        {null, null, "", null, null, null},
-                        {null, null, null, null, null, null},
-                        {null, "", null, null, null, null},
-                        {null, null, null, null, null, null},
-                        {null, "", null, null, null, null},
+                        {null, "", null, null, null, null, null},
+                        {null, null, null, null, null, null, null},
+                        {"", null, null, null, null, null, null},
+                        {null, null, null, null, null, null, null},
+                        {"", null, null, null, null, null, null},
                 },
                 new String[] {
-                        "ID", "Name CRS", "Semester", "Year", "Date Start", "Date End"
+                        "MSSV", "Student Name", "Subject Code", "Subject Name", "Teacher Name", "Study Time", "Registration Time"
                 }
         ));
-        table_2.getColumnModel().getColumn(1).setPreferredWidth(221);
-        table_2.getColumnModel().getColumn(2).setPreferredWidth(84);
-        table_2.getColumnModel().getColumn(5).setPreferredWidth(100);
+        table_2.getColumnModel().getColumn(0).setPreferredWidth(69);
+        table_2.getColumnModel().getColumn(1).setPreferredWidth(84);
+        table_2.getColumnModel().getColumn(6).setPreferredWidth(115);
 
         JPopupMenu popupMenu = new JPopupMenu();
         addPopup(table_2, popupMenu);
@@ -81,110 +75,120 @@ public class PanelManagementSRC extends JPanel {
         JMenuItem itmenuDelete = new JMenuItem("Delete");
         popupMenu.add(itmenuDelete);
 
-
-        JButton btnNewCRS = new JButton("New CRS");
-        btnNewCRS.setBounds(348, 286, 115, 21);
-        contentPane.add(btnNewCRS);
-
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        panel.setBounds(541, 53, 221, 183);
+        panel.setBounds(541, 53, 221, 205);
         contentPane.add(panel);
 
-        JLabel lbID = new JLabel("ID");
-        lbID.setBounds(0, 1, 125, 18);
-        panel.add(lbID);
+        JLabel lbMSSV = new JLabel("MSSV");
+        lbMSSV.setBounds(0, 1, 125, 18);
+        panel.add(lbMSSV);
 
-        textField = new JTextField();
-        textField.setColumns(10);
-        textField.setBounds(95, 1, 125, 18);
-        panel.add(textField);
+        txtMSSV = new JTextField();
+        txtMSSV.setEditable(false);
+        txtMSSV.setColumns(10);
+        txtMSSV.setBounds(95, 1, 125, 18);
+        panel.add(txtMSSV);
 
-        JLabel lblNewLabel_1 = new JLabel("Name CRS");
+        JLabel lblNewLabel_1 = new JLabel("Student Name");
         lblNewLabel_1.setBounds(0, 29, 125, 18);
         panel.add(lblNewLabel_1);
 
-        textField_1 = new JTextField();
-        textField_1.setColumns(10);
-        textField_1.setBounds(95, 29, 125, 18);
-        panel.add(textField_1);
+        txtStudentName = new JTextField();
+        txtStudentName.setEditable(false);
+        txtStudentName.setColumns(10);
+        txtStudentName.setBounds(95, 29, 125, 18);
+        panel.add(txtStudentName);
 
-        JLabel lblNewLabel_2 = new JLabel("Semester");
+        JLabel lblNewLabel_2 = new JLabel("Subject Code");
         lblNewLabel_2.setBounds(0, 57, 125, 18);
         panel.add(lblNewLabel_2);
 
-        textField_2 = new JTextField();
-        textField_2.setColumns(10);
-        textField_2.setBounds(95, 57, 125, 18);
-        panel.add(textField_2);
+        txtSubjectCode = new JTextField();
+        txtSubjectCode.setEditable(false);
+        txtSubjectCode.setColumns(10);
+        txtSubjectCode.setBounds(95, 57, 125, 18);
+        panel.add(txtSubjectCode);
 
-        JLabel lblNewLabel_3 = new JLabel("Year");
+        JLabel lblNewLabel_3 = new JLabel("Subject Name");
         lblNewLabel_3.setBounds(0, 85, 125, 18);
         panel.add(lblNewLabel_3);
 
-        textField_3 = new JTextField();
-        textField_3.setColumns(10);
-        textField_3.setBounds(95, 85, 125, 18);
-        panel.add(textField_3);
+        txtSubjectName = new JTextField();
+        txtSubjectName.setEditable(false);
+        txtSubjectName.setColumns(10);
+        txtSubjectName.setBounds(95, 85, 125, 18);
+        panel.add(txtSubjectName);
 
-        JLabel lblNewLabel_3_1 = new JLabel("Date Start");
+        JLabel lblNewLabel_3_1 = new JLabel("Teacher Name");
         lblNewLabel_3_1.setBounds(0, 113, 125, 18);
         panel.add(lblNewLabel_3_1);
 
-        textField_4 = new JTextField();
-        textField_4.setColumns(10);
-        textField_4.setBounds(95, 113, 125, 18);
-        panel.add(textField_4);
+        txtTeacherName = new JTextField();
+        txtTeacherName.setEditable(false);
+        txtTeacherName.setColumns(10);
+        txtTeacherName.setBounds(95, 113, 125, 18);
+        panel.add(txtTeacherName);
 
-        JLabel lblNewLabel_3_2 = new JLabel("Date End");
+        JLabel lblNewLabel_3_2 = new JLabel("Study Time");
         lblNewLabel_3_2.setBounds(0, 141, 125, 18);
         panel.add(lblNewLabel_3_2);
 
-        textField_5 = new JTextField();
-        textField_5.setColumns(10);
-        textField_5.setBounds(95, 141, 125, 18);
-        panel.add(textField_5);
+        txtStudyTime = new JTextField();
+        txtStudyTime.setEditable(false);
+        txtStudyTime.setColumns(10);
+        txtStudyTime.setBounds(95, 141, 125, 18);
+        panel.add(txtStudyTime);
+
+        JLabel lblNewLabel_3_3 = new JLabel("Registration Time");
+        lblNewLabel_3_3.setBounds(0, 170, 125, 18);
+        panel.add(lblNewLabel_3_3);
+
+        txtRegistrationTime = new JTextField();
+        txtRegistrationTime.setEditable(false);
+        txtRegistrationTime.setColumns(10);
+        txtRegistrationTime.setBounds(95, 170, 125, 18);
+        panel.add(txtRegistrationTime);
 
         JButton btnExit = new JButton("Exit");
-        btnExit.setBounds(677, 328, 85, 21);
+        btnExit.setBounds(677, 318, 85, 21);
         contentPane.add(btnExit);
-
-        JButton btnSave = new JButton("Save");
-        btnSave.setBounds(677, 257, 85, 21);
-        contentPane.add(btnSave);
 
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(SystemColor.textHighlight);
         menuBar.setBounds(0, 0, 772, 22);
         contentPane.add(menuBar);
 
-        JLabel lblNewLabel = new JLabel("Semester Current");
-        lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
-        lblNewLabel.setBounds(10, 32, 115, 13);
+        JLabel lblNewLabel = new JLabel("Information");
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
+        lblNewLabel.setBounds(542, 22, 147, 21);
         contentPane.add(lblNewLabel);
 
-        textField_6 = new JTextField();
-        textField_6.setEditable(false);
-        textField_6.setColumns(10);
-        textField_6.setBounds(135, 30, 47, 19);
-        contentPane.add(textField_6);
+        txtStudent = new JTextField();
+        txtStudent.setColumns(10);
+        txtStudent.setBounds(61, 32, 96, 19);
+        contentPane.add(txtStudent);
 
-        JLabel lblNewLabel_4 = new JLabel("Year");
-        lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 13));
-        lblNewLabel_4.setBounds(208, 33, 45, 13);
+        JLabel lblNewLabel_4 = new JLabel("Student");
+        lblNewLabel_4.setBounds(10, 33, 45, 13);
         contentPane.add(lblNewLabel_4);
 
-        textField_7 = new JTextField();
-        textField_7.setEditable(false);
-        textField_7.setColumns(10);
-        textField_7.setBounds(248, 30, 47, 19);
-        contentPane.add(textField_7);
+        JButton btnSearch = new JButton("Search");
+        btnSearch.setBounds(167, 32, 65, 21);
+        contentPane.add(btnSearch);
 
-        JButton btnCancel = new JButton("Cancel");
-        btnCancel.setBounds(582, 257, 85, 21);
-        contentPane.add(btnCancel);
+        JComboBox comboBox = new JComboBox();
+        comboBox.setEditable(true);
+        comboBox.setBounds(410, 32, 65, 21);
+        contentPane.add(comboBox);
+
+        JLabel lblNewLabel_5 = new JLabel("Course");
+        lblNewLabel_5.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblNewLabel_5.setBounds(360, 35, 45, 13);
+        contentPane.add(lblNewLabel_5);
 
     }
+
     private static void addPopup(Component component, final JPopupMenu popup) {
         component.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {

@@ -12,7 +12,7 @@
     <property name="connection.password">
       11111111
     </property>
-    <property name="hbm2ddl.auto">update</property>
+    <property name="hbm2ddl.auto">create</property>
     <property name="hibernate.show_sql">true</property>
 
 

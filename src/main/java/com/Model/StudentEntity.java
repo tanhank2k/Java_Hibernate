@@ -33,7 +33,7 @@ public class StudentEntity {
     private String studentName;
     
       
-    @Column(name = "MSSV", nullable = false, length = 255)
+    @Column(name = "MSSV", nullable = false, length = 255, unique = true)
     private String mssv;
 
     @Column(name="Gender", nullable = true,length = 255)

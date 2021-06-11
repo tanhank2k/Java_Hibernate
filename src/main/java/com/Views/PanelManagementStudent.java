@@ -6,15 +6,17 @@ import com.Model.StudentEntity;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Component;
 import java.awt.Font;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class PanelManagementStudent extends JPanel {
     private JTextField txtUsername;
     private JTextField Password;
     private JTextField txtSearch;
+    private boolean isCreate=true;
 
     /**
      * Create the panel.
@@ -91,21 +94,6 @@ public class PanelManagementStudent extends JPanel {
         table_2.getColumnModel().getColumn(2).setPreferredWidth(84);
         table_2.getColumnModel().getColumn(6).setPreferredWidth(90);
         table_2.getColumnModel().getColumn(8).setPreferredWidth(100);
-        
-        table_2.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                txtMSSV.setText(table_2.getValueAt(table_2.getSelectedRow(),0).toString());
-                txtName.setText(table_2.getValueAt(table_2.getSelectedRow(),1).toString());
-                txtGender.setText(table_2.getValueAt(table_2.getSelectedRow(),2).toString());
-                txtDoB.setText(table_2.getValueAt(table_2.getSelectedRow(),3).toString());
-                txtAddress.setText(table_2.getValueAt(table_2.getSelectedRow(),4).toString());
-                txtPhone.setText(table_2.getValueAt(table_2.getSelectedRow(),5).toString());
-                txtClass.setText(table_2.getValueAt(table_2.getSelectedRow(),6).toString());
-                txtUsername.setText(table_2.getValueAt(table_2.getSelectedRow(),7).toString());
-                Password.setText(table_2.getValueAt(table_2.getSelectedRow(),8).toString());
-            }
-        });
 
         JPopupMenu popupMenu = new JPopupMenu();
         addPopup(table_2, popupMenu);
@@ -235,6 +223,7 @@ public class PanelManagementStudent extends JPanel {
         JButton btnResetPassword = new JButton("Reset password");
         btnResetPassword.setBounds(551, 318, 116, 21);
         contentPane.add(btnResetPassword);
+        btnResetPassword.setEnabled(false);
 
         JLabel lblNewLabel = new JLabel("Student Information");
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -255,6 +244,7 @@ public class PanelManagementStudent extends JPanel {
         contentPane.add(btnSearch);
 
         JComboBox comboBox = new JComboBox(ClassDAO.getAllClassName());
+        comboBox.setSelectedIndex(-1);
         comboBox.setEditable(true);
         comboBox.setBounds(379, 32, 96, 21);
         contentPane.add(comboBox);
@@ -265,6 +255,30 @@ public class PanelManagementStudent extends JPanel {
         lblNewLabel_5.setBounds(348, 35, 36, 13);
         contentPane.add(lblNewLabel_5);
 
+        table_2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                txtMSSV.setText(table_2.getValueAt(table_2.getSelectedRow(),0).toString());
+                txtName.setText(table_2.getValueAt(table_2.getSelectedRow(),1).toString());
+                txtGender.setText(table_2.getValueAt(table_2.getSelectedRow(),2).toString());
+                txtDoB.setText(table_2.getValueAt(table_2.getSelectedRow(),3).toString());
+                txtAddress.setText(table_2.getValueAt(table_2.getSelectedRow(),4).toString());
+                txtPhone.setText(table_2.getValueAt(table_2.getSelectedRow(),5).toString());
+                txtClass.setText(table_2.getValueAt(table_2.getSelectedRow(),6).toString());
+                txtUsername.setText(table_2.getValueAt(table_2.getSelectedRow(),7).toString());
+                Password.setText(table_2.getValueAt(table_2.getSelectedRow(),8).toString());
+                btnResetPassword.setEnabled(true);
+                setStatus(btnSave,false);
+                btnResetPassword.setText("Reset password");
+            }
+        });
+        comboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ReloadOnClass(tableModel,comboBox.getSelectedItem().toString());
+
+            }
+        });
         txtMSSV.setEditable(false);
         txtName.setEditable(false);
         txtGender.setEditable(false);
@@ -274,6 +288,151 @@ public class PanelManagementStudent extends JPanel {
         txtClass.setEditable(false);
         txtUsername.setEditable(false);
         Password.setEditable(false);
+        //NEW STUDENT
+        btnNewStudent.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                isCreate = true;
+                txtMSSV.setEditable(true);
+                btnResetPassword.setText("Cancel");
+                setStatus(btnSave,true);
+                setText("");
+                Password.setText("12345678");
+                txtClass.setText(comboBox.getSelectedItem().toString());
+            }
+        });
+        //SAVE
+        btnSave.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String MSSV = txtMSSV.getText();
+                String studentName = txtName.getText();
+                String gender = txtGender.getText();
+
+                Date dob =  null;
+                try {
+                    dob = new SimpleDateFormat("yyyy-MM-dd").parse(txtDoB.getText());
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
+
+                String address = txtAddress.getText();
+                String phone = txtPhone.getText();
+                String user = txtUsername.getText();
+                String password = Password.getText();
+                if (comboBox.getSelectedItem()!= null ){
+                    if (!comboBox.getSelectedItem().toString().equals("") && isCreate){
+                        StudentDAO.AddNewStudent(MSSV,studentName,comboBox.getSelectedItem().toString(),gender,dob,address,phone,user,password);
+
+                    }else {
+                        if (!isCreate){
+                            StudentDAO.UpdateStudent(MSSV,studentName,comboBox.getSelectedItem().toString(),gender,dob,address,phone,user);
+                        }
+                    }
+                }
+
+
+                if (comboBox.getSelectedItem() != null) {
+                    ReloadOnClass(tableModel, comboBox.getSelectedItem().toString());
+                } else {
+                    ReloadAll(tableModel);
+                }
+                setText("");
+                setStatus(btnSave,false);
+                btnResetPassword.setText("Reset password");
+                txtMSSV.setEditable(false);
+            }
+        });
+
+        btnResetPassword.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(btnResetPassword.getText().equals("Reset password")){
+                    StudentDAO.ResetPassword(txtMSSV.getText());
+
+                    String ClassName = comboBox.getSelectedItem()!=null? comboBox.getSelectedItem().toString():"";
+                    if (ClassName.equals("")){
+                        ReloadAll(tableModel);
+                    }
+                    else {
+                        ReloadOnClass(tableModel,ClassName);
+                    }
+                }else{
+                    setText("");
+                    Password.setText("");
+                    setStatus(btnSave,false);
+                    btnResetPassword.setText("Reset password");
+                    txtMSSV.setEditable(false);
+                    //btnResetPassword.setVisible(false);
+                }
+            }
+        });
+        //Popup New
+        itmenuNew.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isCreate = true;
+                txtMSSV.setEditable(true);
+                btnResetPassword.setText("Cancel");
+                setStatus(btnSave,true);
+                setText("");
+                Password.setText("123456789");
+                txtClass.setText(comboBox.getSelectedItem().toString());
+            }
+        });
+
+        //Popup Edit
+        itmenuEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isCreate = false;
+                setStatus(btnSave,true);
+                btnResetPassword.setText("Cancel");
+            }
+        });
+        //Popup Delete
+        itmenuDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                StudentDAO.DeleteStudent(txtMSSV.getText());
+                String ClassName = comboBox.getSelectedItem()!=null? comboBox.getSelectedItem().toString():"";
+                if (ClassName.equals("")){
+                    ReloadAll(tableModel);
+                }
+                else {
+                    ReloadOnClass(tableModel,ClassName);
+                }
+
+            }
+        });
+
+        btnSearch.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                String ClassName = comboBox.getSelectedItem()!=null? comboBox.getSelectedItem().toString():"";
+                List<Object[]> results = StudentDAO.SearchStudent(txtSearch.getText(),ClassName);
+                tableModel.setRowCount(0);
+
+                for (Object[] student: results){
+                    String MSSV = (String) student[0];
+                    String Name = (String) student[1];
+                    String Gender = (String) student[2];
+                    Date DoB = (Date) student[3];
+                    String Address = (String) student[4];
+                    String Phone = (String) student[5];
+                    String Clazz = (String) student[6];
+                    String Username = (String) student[7];
+                    String Password = (String) student[8];
+
+                    Object[] data = new Object[] {MSSV, Name, Gender,DoB, Address, Phone, Clazz,Username, Password};
+                    tableModel.addRow(data);
+                }
+
+                tableModel.fireTableDataChanged();
+            }
+        });
+
     }
     private static void addPopup(Component component, final JPopupMenu popup) {
         component.addMouseListener(new MouseAdapter() {
@@ -291,5 +450,76 @@ public class PanelManagementStudent extends JPanel {
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
         });
+    }
+
+    public void setStatus (JButton btnSave,boolean status){
+        //txtMSSV.setEditable(status);
+        txtName.setEditable(status);
+        txtGender.setEditable(status);
+        txtDoB.setEditable(status);
+        txtAddress.setEditable(status);
+        txtPhone.setEditable(status);
+        //txtClass.setEditable(status);
+        txtUsername.setEditable(status);
+
+        btnSave.setEnabled(status);
+        //Password.setEditable(status);
+    }
+
+    public void setText (String str){
+        txtMSSV.setText(str);
+        txtName.setText(str);
+        txtGender.setText(str);
+        txtDoB.setText(str);
+        txtAddress.setText(str);
+        txtPhone.setText(str);
+        txtClass.setText(str);
+        txtUsername.setText(str);
+        //Password.setEditable(status);
+    }
+
+    public void ReloadAll(DefaultTableModel tableModel){
+        tableModel.setRowCount(0);
+
+        List<StudentEntity> students = StudentDAO.getAllStudent();
+        for (var student:students){
+            String MSSV = student.getMssv();
+            String Name = student.getStudentName();
+            String Gender = student.getGender();
+            Date DoB = student.getDateOfBitrh();
+            String Address = student.getAddress();
+            String Phone = student.getPhone();
+            String Clazz = student.getClazzByClazz()!=null ? student.getClazzByClazz().getClassName() :"";
+            String Username = student.getUsername();
+            String Password = student.getPassword();
+
+            Object[] data = new Object[] {MSSV, Name, Gender,DoB, Address, Phone, Clazz,Username, Password};
+            tableModel.addRow(data);
+        }
+
+        tableModel.fireTableDataChanged();
+    }
+
+    public void ReloadOnClass(DefaultTableModel tableModel, String ClassName){
+        List<Object[]> results = StudentDAO.getStudentInClass(ClassName);
+        tableModel.setRowCount(0);
+
+        for (Object[] student: results){
+            String MSSV = (String) student[0];
+            String Name = (String) student[1];
+            String Gender = (String) student[2];
+            Date DoB = (Date) student[3];
+            String Address = (String) student[4];
+            String Phone = (String) student[5];
+            String Clazz = (String) student[6];
+            String Username = (String) student[7];
+            String Password = (String) student[8];
+
+            Object[] data = new Object[] {MSSV, Name, Gender,DoB, Address, Phone, Clazz,Username, Password};
+            tableModel.addRow(data);
+        }
+
+        tableModel.fireTableDataChanged();
+
     }
 }

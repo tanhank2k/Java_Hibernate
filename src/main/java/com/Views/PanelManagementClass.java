@@ -11,6 +11,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Component;
@@ -76,9 +78,9 @@ public class PanelManagementClass extends JPanel {
         table_2.getColumnModel().getColumn(1).setPreferredWidth(84);
         table_2.getColumnModel().getColumn(4).setPreferredWidth(100);
 
-        table_2.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        table_2.addMouseListener(new MouseAdapter() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void mousePressed(MouseEvent e) {
                 txtID.setText(table_2.getValueAt(table_2.getSelectedRow(), 0).toString());
                 txtName.setText(table_2.getValueAt(table_2.getSelectedRow(), 1).toString());
                 txtTotalStudent.setText(table_2.getValueAt(table_2.getSelectedRow(), 2).toString());
@@ -90,33 +92,18 @@ public class PanelManagementClass extends JPanel {
         JPopupMenu popupMenu_1 = new JPopupMenu();
         addPopup(table_2, popupMenu_1);
 
-        JMenuItem itmenuNewTeacher = new JMenuItem("New Class");
-        itmenuNewTeacher.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-        });
-        popupMenu_1.add(itmenuNewTeacher);
+        JMenuItem itmenuNewClass = new JMenuItem("New Class");
+        popupMenu_1.add(itmenuNewClass);
 
-        JMenuItem itmenuEditTeacher = new JMenuItem("Edit");
-        itmenuEditTeacher.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-        });
-        popupMenu_1.add(itmenuEditTeacher);
+        JMenuItem itmenuEdit = new JMenuItem("Edit");
+        popupMenu_1.add(itmenuEdit);
 
-        JMenuItem itmenuDeleteTeacher = new JMenuItem("Delete");
-        itmenuDeleteTeacher.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-        });
-        popupMenu_1.add(itmenuDeleteTeacher);
+        JMenuItem itmenuDeleteClass = new JMenuItem("Delete");
+        popupMenu_1.add(itmenuDeleteClass);
 
-        JButton btnNewSubject = new JButton("New Class");
-        btnNewSubject.setBounds(348, 286, 115, 21);
-        add(btnNewSubject);
+        JButton btnNewClass = new JButton("New Class");
+        btnNewClass.setBounds(348, 286, 115, 21);
+        add(btnNewClass);
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -217,9 +204,118 @@ public class PanelManagementClass extends JPanel {
         txtTotalStudent.setEditable(false);
         txtTotalMale.setEditable(false);
         txtTotalFemale.setEditable(false);
-        txtSearch.setEditable(false);
-    }
+        txtSearch.setEditable(true);
+        //SAVE
+        btnSave.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String ClassName = txtName.getText();
 
+                if (txtID.getText().equals("")){
+                    ClassDAO.AddNewClass(ClassName);
+                }
+                    else{
+                        ClassDAO.UpdateClass(Integer.parseInt(txtID.getText()), ClassName);
+                }
+                ReloadTable(tableModel);
+
+                btnCancel.setVisible(false);
+                setStatus(btnSave, false);
+                setText("");
+            }
+        });
+        //NEW CLASS
+        btnNewClass.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setStatus(btnSave,true);
+
+                btnCancel.setVisible(true);
+                btnCancel.setEnabled(true);
+
+                txtID.setText("");
+                txtName.setText("");
+                txtTotalStudent.setText("0");
+                txtTotalMale.setText("0");
+                txtTotalFemale.setText("0");
+
+            }
+        });
+        //CANCEL
+        btnCancel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setStatus(btnSave, false);
+                setText("");
+                btnCancel.setVisible(false);
+            }
+        });
+
+        btnSearch.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String str = txtSearch.getText();
+
+                if (!str.equals("")){
+                    List<Object[]> clazzes = ClassDAO.SearchClass(str);
+
+                    tableModel.setRowCount(0);
+
+                    for (var clazz:clazzes) {
+                        int id = (int) clazz[0];
+                        String Name = (String) clazz[1];
+                        int total = (int) clazz[2];
+                        int totalMale = (int) clazz[3];
+                        int totalFemale = (int) clazz[4];
+
+
+                        Object[] data = {id, Name, total, totalMale,totalFemale};
+
+                        tableModel.addRow(data);
+
+                    }
+                    tableModel.fireTableDataChanged();
+                }
+            }
+        });
+
+        itmenuEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus(btnSave,true);
+
+                btnCancel.setVisible(true);
+                btnCancel.setEnabled(true);
+
+            }
+        });
+
+        itmenuNewClass.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus(btnSave,true);
+
+                btnCancel.setVisible(true);
+                btnCancel.setEnabled(true);
+
+                txtID.setText("");
+                txtName.setText("");
+                txtTotalStudent.setText("0");
+                txtTotalMale.setText("0");
+                txtTotalFemale.setText("0");
+            }
+        });
+
+        itmenuDeleteClass.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ClassDAO.DeleteClass(Integer.parseInt(table_2.getValueAt(table_2.getSelectedRow(),0).toString()));
+                ReloadTable(tableModel);
+            }
+
+        });
+    }
+//-----------------------------------------------------------------------------------------------------------
     private static void addPopup(Component component, final JPopupMenu popup) {
         component.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -236,6 +332,40 @@ public class PanelManagementClass extends JPanel {
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
         });
+    }
+
+    public void setStatus(JButton btnSave, boolean status){
+        txtName.setEditable(status);
+        btnSave.setEnabled(status);
+    }
+
+    public void setText(String txt){
+        txtID.setText(txt);
+        txtName.setText(txt);
+        txtTotalStudent.setText(txt);
+        txtTotalMale.setText(txt);
+        txtTotalFemale.setText(txt);
+
+    }
+
+    private static void ReloadTable(DefaultTableModel tableModel){
+        tableModel.setRowCount(0);
+
+        List<ClazzEntity> clazzes = ClassDAO.getAllClass();
+        for (var clazz:clazzes) {
+            int id = clazz.getId();
+            String Name = clazz.getClassName();
+            int total = clazz.getTotalStudent();
+            int totalMale = clazz.getTotalMale();
+            int totalFemale = clazz.getTotalFeMale();
+
+
+            Object[] data = {id, Name, total, totalMale,totalFemale};
+
+            tableModel.addRow(data);
+
+        }
+        tableModel.fireTableDataChanged();
     }
 }
 

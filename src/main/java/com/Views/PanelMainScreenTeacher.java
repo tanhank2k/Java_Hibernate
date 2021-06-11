@@ -109,15 +109,23 @@ public class PanelMainScreenTeacher extends JPanel {
             }
         });
 
-        JButton btnNewButton_2_1_2_2_1 = new JButton("Management Student Registration Course");
-        btnNewButton_2_1_2_2_1.setToolTipText("Management Course Registration Session");
-        btnNewButton_2_1_2_2_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        JButton btnSRC = new JButton("Management Student Registration Course");
+        btnSRC.setToolTipText("Management Course Registration Session");
+        btnSRC.setFont(new Font("Tahoma", Font.PLAIN, 13));
         GridBagConstraints gbc_btnNewButton_2_1_2_2_1 = new GridBagConstraints();
         gbc_btnNewButton_2_1_2_2_1.fill = GridBagConstraints.BOTH;
         gbc_btnNewButton_2_1_2_2_1.insets = new Insets(0, 0, 5, 0);
         gbc_btnNewButton_2_1_2_2_1.gridx = 2;
         gbc_btnNewButton_2_1_2_2_1.gridy = 1;
-        contentPane.add(btnNewButton_2_1_2_2_1, gbc_btnNewButton_2_1_2_2_1);
+        contentPane.add(btnSRC, gbc_btnNewButton_2_1_2_2_1);
+
+        btnSRC.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                jFrame.setContentPane(new PanelManagementSRC(jFrame));
+                jFrame.setVisible(true);
+            }
+        });
 
         JButton btnCRS = new JButton("Management Course Registration Session");
         btnCRS.setToolTipText("Management Course Registration Session");
@@ -128,6 +136,14 @@ public class PanelMainScreenTeacher extends JPanel {
         gbc_btnCRS.gridx = 0;
         gbc_btnCRS.gridy = 2;
         contentPane.add(btnCRS, gbc_btnCRS);
+
+        btnCRS.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                jFrame.setContentPane(new PanelManagementCRS(jFrame));
+                jFrame.setVisible(true);
+            }
+        });
 
         JButton btnStudent = new JButton("Management Student");
         btnStudent.setFont(new Font("Tahoma", Font.PLAIN, 13));

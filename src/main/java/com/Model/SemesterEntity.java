@@ -35,6 +35,9 @@ public class SemesterEntity {
       
     @Column(name = "dateEnd", nullable = false)
     private Date dateEnd;
+
+    @Column(name = "isPresent",nullable = false)
+    private Boolean isPresent;
     
     @OneToMany(mappedBy = "semesterByIdSemester")
     private Collection<CourseEntity> coursesById;

@@ -8,8 +8,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -65,9 +66,9 @@ public class PanelManagementSemester extends JPanel {
         table.setModel(tableModel);
         table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        table.addMouseListener(new MouseAdapter() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void mousePressed(MouseEvent e) {
                 txtID.setText(tableModel.getValueAt(table.getSelectedRow(),0).toString());
                 txtSemester.setText(tableModel.getValueAt(table.getSelectedRow(),1).toString());
                 txtYear.setText(tableModel.getValueAt(table.getSelectedRow(),2).toString());
@@ -157,6 +158,102 @@ public class PanelManagementSemester extends JPanel {
         btnCreate.setBounds(375, 287, 100, 21);
         contentPane.add(btnCreate);
 
+        JButton btnExit = new JButton("Exit");
+        btnExit.setBounds(677, 318, 85, 21);
+        contentPane.add(btnExit);
+
+        btnExit.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                frame.setContentPane(new PanelMainScreenTeacher(frame));
+                frame.setVisible(true);
+            }
+        });
+
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(SystemColor.textHighlight);
+        menuBar.setBounds(0, 0, 772, 22);
+        contentPane.add(menuBar);
+
+        JButton btnSave = new JButton("Save");
+        btnSave.setBounds(677, 283, 85, 21);
+        contentPane.add(btnSave);
+        btnSave.setVisible(false);
+        //Save
+        btnSave.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Date start = null;
+                Date end = null;
+                String Semester = txtSemester.getText();
+                int year = Integer.parseInt(txtYear.getText());
+                try {
+                     start = new SimpleDateFormat("yyyy-MM-dd").parse(txtDateStart.getText().toString());
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
+                try {
+                    end = new SimpleDateFormat("yyyy-MM-dd").parse(txtDateEnd.getText().toString());
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
+                txtID.getText();
+                if(!txtID.getText().equals("")){
+                    //SemesterDAO.UpdateSemester(Integer.parseInt(txtID.getText()),Semester,year,start,end);
+                    SemesterDAO.AddNewSemester(Semester,year,start,end);
+                }else {
+                    SemesterDAO.AddNewSemester(Semester,year,start,end);
+                }
+
+                tableModel.getDataVector().removeAllElements();
+                //tableModel.setRowCount(0);
+                tableModel.fireTableDataChanged();
+                List<SemesterEntity> semesters = SemesterDAO.getAllSemester();
+
+                for (var semester:semesters) {
+                    int id = semester.getId();
+                    String Name = semester.getSemesterName();
+                    int years = semester.getYear();
+                    Date starts = semester.getDateStart();
+                    Date ends = semester.getDateEnd();
+
+                    Object[] data = {id, Name, years,starts,ends};
+
+                    tableModel.addRow(data);
+
+                }
+                table.setModel(tableModel);
+                tableModel.fireTableDataChanged();
+            }
+        });
+
+        JButton btnCancel = new JButton("Cancel");
+        btnCancel.setBounds(582, 283, 85, 21);
+        contentPane.add(btnCancel);
+        btnCancel.setVisible(false);
+        btnCancel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                txtID.setEditable(false);
+                txtID.setText("");
+
+                txtSemester.setEditable(false);
+                txtSemester.setText("");
+
+                txtYear.setEditable(false);
+                txtYear.setText("");
+
+                txtDateStart.setEditable(false);
+                txtDateStart.setText("");
+
+                txtDateEnd.setEditable(false);
+                txtDateEnd.setText("");
+
+                btnSave.setVisible(false);
+                btnCancel.setVisible(false);
+            }
+        });
+
         btnCreate.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -174,26 +271,72 @@ public class PanelManagementSemester extends JPanel {
 
                 txtDateEnd.setEditable(true);
                 txtDateEnd.setText("");
+
+                btnSave.setVisible(true);
+                btnCancel.setVisible(true);
             }
         });
 
-
-        JButton btnExit = new JButton("Exit");
-        btnExit.setBounds(677, 318, 85, 21);
-        contentPane.add(btnExit);
-
-        btnExit.addMouseListener(new MouseAdapter() {
+        itmenuEdit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                frame.setContentPane(new PanelMainScreenTeacher(frame));
-                frame.setVisible(true);
+                setStatus(btnSave, btnCancel, true);
             }
         });
 
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(SystemColor.textHighlight);
-        menuBar.setBounds(0, 0, 772, 22);
-        contentPane.add(menuBar);
+        itmenuEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtID.setEditable(false);
+                txtID.setText(table.getValueAt(table.getSelectedRow(),0).toString());
+
+                txtSemester.setEditable(true);
+                txtSemester.setText(table.getValueAt(table.getSelectedRow(),1).toString());
+
+                txtYear.setEditable(true);
+                txtYear.setText(table.getValueAt(table.getSelectedRow(),2).toString());
+
+                txtDateStart.setEditable(true);
+                txtDateStart.setText(table.getValueAt(table.getSelectedRow(),3).toString());
+
+                txtDateEnd.setEditable(true);
+                txtDateEnd.setText(table.getValueAt(table.getSelectedRow(),4).toString());
+
+                btnSave.setVisible(true);
+                btnCancel.setVisible(true);
+            }
+        });
+        itmenuDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Date start = null;
+                Date end = null;
+                String Semester = txtSemester.getText();
+                int year = Integer.parseInt(txtYear.getText());
+                try {
+                    start = new SimpleDateFormat("yyyy-MM-dd").parse(txtDateStart.getText().toString());
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
+                try {
+                    end = new SimpleDateFormat("yyyy-MM-dd").parse(txtDateEnd.getText().toString());
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
+
+                setStatus(btnSave,btnCancel, false);
+                SemesterDAO.DeleteSemester(Semester,year,start,end);
+
+                setStatus(btnSave, btnCancel, false);
+                tableModel.removeRow(table.getSelectedRow());
+                tableModel.fireTableDataChanged();
+                table.setModel(tableModel);
+                tableModel.fireTableDataChanged();
+            }
+        });
+
+
+
 
     }
 
@@ -214,4 +357,26 @@ public class PanelManagementSemester extends JPanel {
             }
         });
     }
+
+    public void setStatus(JButton btnSave, JButton btnCancel, boolean status){
+        txtID.setEditable(status);
+        txtID.setText("");
+
+        txtSemester.setEditable(status);
+        txtSemester.setText("");
+
+        txtYear.setEditable(status);
+        txtYear.setText("");
+
+        txtDateStart.setEditable(status);
+        txtDateStart.setText("");
+
+        txtDateEnd.setEditable(status);
+        txtDateEnd.setText("");
+
+        btnSave.setVisible(status);
+        btnCancel.setVisible(status);
+    }
+
+
 }
