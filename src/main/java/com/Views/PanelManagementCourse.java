@@ -1,6 +1,7 @@
 package com.Views;
 
 import com.DAO.CourseDAO;
+import com.DAO.SemesterDAO;
 import com.Model.CourseEntity;
 
 import javax.swing.*;
@@ -10,6 +11,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Component;
@@ -28,7 +31,7 @@ public class PanelManagementCourse extends JPanel {
     private JTextField txtStudentMax;
     private JTextField txtYear;
     private JTextField txtCourse;
-    private JTextField txtStudentMaxCurr;
+    private JTextField txtSemesterCurr;
 
     /**
      * Create the panel.
@@ -69,26 +72,27 @@ public class PanelManagementCourse extends JPanel {
             }
         };
 
-        List<CourseEntity> courses = CourseDAO.getAllCourse();
-        for (var course:courses) {
-            int id = course.getId();
-            String subCode = course.getSubjectCode();
-            String subName = course.getSubjectName();
-            int NoC = course.getNumberOfCredits();
-            String teacherName = course.getTeacherName();
-            String roomName = course.getRoomName();
-            String DoS = course.getDateOnSchool();
-            int period = course.getPeriod();
-            int studentMax = course.getStudentMaximum();
+        List<Object[]> courses = CourseDAO.getAllCourseInCurr();
+        for (Object[] course:courses) {
+            int id = (int) course[0];
+            String subCode = (String) course[6];
+            String subName = (String) course[7];
+            int NoC = (int) course[2];
+            String teacherName = (String) course[8];
+            String roomName = (String) course[4];
+            String DoS = (String) course[1];
+            int period = (int) course[3];
+            int studentMax = (int) course[5];
 
 
             Object [] data = new Object[] {id, subCode, subName,NoC,teacherName,roomName,DoS,period,studentMax};
             tableModel.addRow(data);
+            tableModel.fireTableDataChanged();
 
         }
-        table_2.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        table_2.addMouseListener(new MouseAdapter() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void mousePressed(MouseEvent e) {
                 txtID.setText(table_2.getValueAt(table_2.getSelectedRow(),0).toString());
                 txtSubjectCode.setText(table_2.getValueAt(table_2.getSelectedRow(),1).toString());
                 txtSubjectName.setText(table_2.getValueAt(table_2.getSelectedRow(),2).toString());
@@ -98,7 +102,6 @@ public class PanelManagementCourse extends JPanel {
                 txtDoS.setText(table_2.getValueAt(table_2.getSelectedRow(),6).toString());
                 txtPeriod.setText(table_2.getValueAt(table_2.getSelectedRow(),7).toString());
                 txtStudentMax.setText(table_2.getValueAt(table_2.getSelectedRow(),8).toString());
-
             }
         });
 
@@ -111,27 +114,12 @@ public class PanelManagementCourse extends JPanel {
         addPopup(table_2, popupMenu);
 
         JMenuItem itmenuNew = new JMenuItem("New");
-        itmenuNew.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-        });
         popupMenu.add(itmenuNew);
 
         JMenuItem itmenuEdit = new JMenuItem("Edit");
-        itmenuEdit.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-        });
         popupMenu.add(itmenuEdit);
 
         JMenuItem itmenuDelete = new JMenuItem("Delete");
-        itmenuDelete.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-        });
         popupMenu.add(itmenuDelete);
 
 
@@ -262,11 +250,11 @@ public class PanelManagementCourse extends JPanel {
         lblNewLabel_5.setBounds(296, 35, 45, 13);
         contentPane.add(lblNewLabel_5);
 
-          txtStudentMaxCurr = new JTextField();
-          txtStudentMaxCurr.setEditable(false);
-          txtStudentMaxCurr.setColumns(10);
-          txtStudentMaxCurr.setBounds(344, 32, 50, 19);
-        contentPane.add(  txtStudentMaxCurr);
+          txtSemesterCurr = new JTextField();
+          txtSemesterCurr.setEditable(false);
+          txtSemesterCurr.setColumns(10);
+          txtSemesterCurr.setBounds(344, 32, 50, 19);
+        contentPane.add(  txtSemesterCurr);
 
         JButton btnCancel = new JButton("Cancel");
         btnCancel.setBounds(582, 328, 85, 21);
@@ -284,6 +272,100 @@ public class PanelManagementCourse extends JPanel {
         txtYear.setBounds(438, 32, 50, 19);
         contentPane.add(txtYear);
 
+        txtSubjectName.setEditable(false);
+        txtNoC.setEditable(false);
+        txtYear.setEditable(false);
+
+        Object[] semesterCur = SemesterDAO.getSemesterCurr();
+        txtSemesterCurr.setText((String) semesterCur[4]);
+        txtYear.setText(semesterCur[5].toString());
+        btnSave.setVisible(false);
+        btnCancel.setVisible(false);
+        txtID.setEditable(false);
+        setStatus(btnSave, btnCancel, false);
+
+
+        btnNewCourse.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus(btnSave, btnCancel,true);
+                setText("");
+            }
+        });
+
+        btnSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String code = txtSubjectCode.getText();
+                String TeacherName = txtTeacherName.getText();
+                String Room = txtRoom.getText();
+                String DoS = txtDoS.getText();
+                int period = Integer.parseInt(txtPeriod.getText());
+                int StudentMax = Integer.parseInt(txtStudentMax.getText());
+                CourseDAO.AddNewCourse(code,TeacherName,Room,DoS,period,StudentMax);
+
+                ReLoad(tableModel);
+                setStatus(btnSave, btnCancel, false);
+                setText("");
+            }
+        });
+
+        btnCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus(btnSave, btnCancel, false);
+                setText("");
+            }
+        });
+
+        btnExit.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                jFrame.setContentPane(new PanelMainScreenTeacher(jFrame));
+                jFrame.setVisible(true);
+            }
+        });
+
+        btnSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                List<Object[]> courses = CourseDAO.SearchCourse(txtCourse.getText());
+                tableModel.setRowCount(0);
+                for (Object[] course:courses) {
+                    int id = (int) course[0];
+                    String subCode = (String) course[6];
+                    String subName = (String) course[7];
+                    int NoC = (int) course[2];
+                    String teacherName = (String) course[8];
+                    String roomName = (String) course[4];
+                    String DoS = (String) course[1];
+                    int period = (int) course[3];
+                    int studentMax = (int) course[5];
+
+
+                    Object [] data = new Object[] {id, subCode, subName,NoC,teacherName,roomName,DoS,period,studentMax};
+                    tableModel.addRow(data);
+                    tableModel.fireTableDataChanged();
+                }
+            }
+        });
+
+        itmenuNew.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus(btnSave, btnCancel,true);
+                setText("");
+            }
+        });
+
+        itmenuDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CourseDAO.DeleteCourse(table_2.getValueAt(table_2.getSelectedRow(),0).toString());
+                ReLoad(tableModel);
+            }
+        });
     }
 
     private static void addPopup(Component component, final JPopupMenu popup) {
@@ -302,6 +384,55 @@ public class PanelManagementCourse extends JPanel {
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
         });
+    }
+
+    public void setStatus(JButton btnSave, JButton btnCancel,boolean status){
+
+        txtSubjectCode.setEditable(status);
+        txtTeacherName.setEditable(status);
+        txtRoom.setEditable(status);
+        txtDoS.setEditable(status);
+        txtPeriod.setEditable(status);
+        txtStudentMax.setEditable(status);
+
+        btnSave.setVisible(status);
+        btnCancel.setVisible(status);
+
+    }
+
+    public void setText(String str){
+        txtID.setText(str);
+        txtSubjectCode.setText(str);
+        txtSubjectName.setText(str);
+        txtNoC.setText(str);
+        txtTeacherName.setText(str);
+        txtRoom.setText(str);
+        txtDoS.setText(str);
+        txtPeriod.setText(str);
+        txtStudentMax.setText(str);
+
+    }
+
+    public void ReLoad(DefaultTableModel tableModel){
+
+        List<Object[]> courses = CourseDAO.getAllCourseInCurr();
+        tableModel.setRowCount(0);
+        for (Object[] course:courses) {
+            int id = (int) course[0];
+            String subCode = (String) course[6];
+            String subName = (String) course[7];
+            int NoC = (int) course[2];
+            String teacherName = (String) course[8];
+            String roomName = (String) course[4];
+            String DoS = (String) course[1];
+            int period = (int) course[3];
+            int studentMax = (int) course[5];
+
+
+            Object [] data = new Object[] {id, subCode, subName,NoC,teacherName,roomName,DoS,period,studentMax};
+            tableModel.addRow(data);
+            tableModel.fireTableDataChanged();
+        }
     }
 
 }

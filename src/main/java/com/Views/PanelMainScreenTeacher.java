@@ -70,7 +70,7 @@ public class PanelMainScreenTeacher extends JPanel {
         btnSubject.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                jFrame.setContentPane(new PanelManagementSubject());
+                jFrame.setContentPane(new PanelManagementSubject(jFrame));
                 jFrame.setVisible(true);
             }
         });

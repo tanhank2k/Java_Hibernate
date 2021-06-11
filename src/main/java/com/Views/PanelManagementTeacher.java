@@ -1,24 +1,26 @@
 package com.Views;
-import com.DAO.SemesterDAO;
+import com.DAO.StudentDAO;
 import com.DAO.TeacherDAO;
-import com.Model.SemesterEntity;
 import com.Model.TeacherEntity;
+import lombok.SneakyThrows;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Font;
 import java.awt.Component;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class PanelManagementTeacher extends JPanel {
-    private JTable table_2;
+    private boolean isCreate = true;
     private JTextField txtID;
     private JTextField txtName;
     private JTextField txtDoB;
@@ -51,11 +53,7 @@ public class PanelManagementTeacher extends JPanel {
         JTable table_2 = new JTable();
         table_2.setSurrendersFocusOnKeystroke(true);
         table_2.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        table_2.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-        });
+
         List<TeacherEntity> teachers = TeacherDAO.getAllSTeacher();
         DefaultTableModel tableModel = new DefaultTableModel( new String[] {
                 "ID", "Teacher Name", "Date of Birth", "Address", "Phone", "Position", "Username", "Password"
@@ -86,17 +84,17 @@ public class PanelManagementTeacher extends JPanel {
         table_2.setModel(tableModel);
         scrollPane.setViewportView(table_2);
 
-        table_2.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        table_2.addMouseListener(new MouseAdapter() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                txtID.setText(table_2.getValueAt(table_2.getSelectedRow(),0).toString());
-                txtName.setText(table_2.getValueAt(table_2.getSelectedRow(),1).toString());
-                txtDoB.setText(table_2.getValueAt(table_2.getSelectedRow(),3).toString());
-                txtAddress.setText(table_2.getValueAt(table_2.getSelectedRow(),2).toString());
-                txtPhone.setText(table_2.getValueAt(table_2.getSelectedRow(),4).toString());
-                txtPosition.setText(table_2.getValueAt(table_2.getSelectedRow(),5).toString());
-                txtUsername.setText(table_2.getValueAt(table_2.getSelectedRow(),6).toString());
-                txtPassword.setText(table_2.getValueAt(table_2.getSelectedRow(),7).toString());
+            public void mousePressed(MouseEvent e) {
+                txtID.setText(table_2.getValueAt(table_2.getSelectedRow(),0)!=null?table_2.getValueAt(table_2.getSelectedRow(),0).toString():"");
+                txtName.setText(table_2.getValueAt(table_2.getSelectedRow(),0)!=null?table_2.getValueAt(table_2.getSelectedRow(),1).toString():"");
+                txtDoB.setText(table_2.getValueAt(table_2.getSelectedRow(),0)!=null?table_2.getValueAt(table_2.getSelectedRow(),2).toString():"");
+                txtAddress.setText(table_2.getValueAt(table_2.getSelectedRow(),0)!=null?table_2.getValueAt(table_2.getSelectedRow(),3).toString():"");
+                txtPhone.setText(table_2.getValueAt(table_2.getSelectedRow(),0)!=null?table_2.getValueAt(table_2.getSelectedRow(),4).toString():"");
+                txtPosition.setText(table_2.getValueAt(table_2.getSelectedRow(),0)!=null?table_2.getValueAt(table_2.getSelectedRow(),5).toString():"");
+                txtUsername.setText(table_2.getValueAt(table_2.getSelectedRow(),0)!=null?table_2.getValueAt(table_2.getSelectedRow(),6).toString():"");
+                txtPassword.setText(table_2.getValueAt(table_2.getSelectedRow(),0)!=null?table_2.getValueAt(table_2.getSelectedRow(),7).toString():"");
             }
         });
         table_2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -104,9 +102,9 @@ public class PanelManagementTeacher extends JPanel {
         addPopup(table_2, popupMenu);
 
         JMenuItem itmenuEdit = new JMenuItem("Edit");
-        itmenuEdit.addMouseListener(new MouseAdapter() {
+        itmenuEdit.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
             }
         });
         popupMenu.add(itmenuEdit);
@@ -115,9 +113,9 @@ public class PanelManagementTeacher extends JPanel {
         popupMenu.add(itmenuDelete);
         contentPane.add(scrollPane);
 
-        JButton btnNewSubject = new JButton("New Teacher");
-        btnNewSubject.setBounds(348, 286, 115, 21);
-        contentPane.add(btnNewSubject);
+        JButton btnNewTeacher = new JButton("New Teacher");
+        btnNewTeacher.setBounds(348, 286, 115, 21);
+        contentPane.add(btnNewTeacher);
 
 
         JPanel panel = new JPanel();
@@ -200,9 +198,9 @@ public class PanelManagementTeacher extends JPanel {
         JButton btnExit = new JButton("Exit");
         btnExit.setBounds(10, 318, 85, 21);
         contentPane.add(btnExit);
-        btnExit.addMouseListener(new MouseAdapter() {
+        btnExit.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 jFrame.setContentPane(new PanelMainScreenTeacher(jFrame));
                 jFrame.setVisible(true);
             }
@@ -222,42 +220,20 @@ public class PanelManagementTeacher extends JPanel {
         btnResetPassword.setBounds(551, 318, 116, 21);
         contentPane.add(btnResetPassword);
 
-        btnResetPassword.addMouseListener(new MouseAdapter() {
+        btnResetPassword.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 String Name = btnResetPassword.getText();
 
                 if (Name == "Cancel"){
-                    txtID.setEditable(false);
-                    txtID.setText("");
-
-                    txtName.setEditable(false);
-                    txtName.setText("");
-
-                    txtDoB.setEditable(false);
-                    txtDoB.setText("");
-
-                    txtAddress.setEditable(false);
-                    txtAddress.setText("");
-
-                    txtPhone.setEditable(false);
-                    txtPhone.setText("");
-
-                    txtPosition.setEditable(false);
-                    txtPosition.setText("");
-
-                    txtUsername.setEditable(false);
-                    txtUsername.setText("");
-
-                    txtPassword.setEditable(false);
-                    txtPassword.setText("");
-
-                    txtSearch.setEditable(false);
-                    txtSearch.setText("");
-
-                    btnSave.setEnabled(false);
-                    btnNewSubject.setEnabled(true);
+                    setStatus(btnSave,false);
+                    setText("");
+                    btnNewTeacher.setEnabled(true);
                     btnResetPassword.setText("Reset password");
+                }
+                else {
+                    TeacherDAO.ResetPassword(Integer.parseInt(table_2.getValueAt(table_2.getSelectedRow(),0).toString()));
+                    ReloadTable(tableModel);
                 }
             }
         });
@@ -276,40 +252,14 @@ public class PanelManagementTeacher extends JPanel {
         contentPane.add(txtSearch);
         txtSearch.setColumns(10);
 
-        btnNewSubject.addMouseListener(new MouseAdapter() {
+        btnNewTeacher.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                txtID.setEditable(true);
-                txtID.setText("");
-
-                txtName.setEditable(true);
-                txtName.setText("");
-
-                txtDoB.setEditable(true);
-                txtDoB.setText("");
-
-                txtAddress.setEditable(true);
-                txtAddress.setText("");
-
-                txtPhone.setEditable(true);
-                txtPhone.setText("");
-
-                txtPosition.setEditable(true);
-                txtPosition.setText("");
-
-                txtUsername.setEditable(true);
-                txtUsername.setText("");
-
-                txtPassword.setEditable(true);
-                txtPassword.setText("");
-
-                txtSearch.setEditable(true);
-                txtSearch.setText("");
-
-                btnSave.setEnabled(true);
-                btnNewSubject.setEnabled(false);
+            public void actionPerformed(ActionEvent e) {
+                isCreate = true;
+                setStatus(btnSave,true);
+                txtPassword.setText("123456789");
+                btnNewTeacher.setEnabled(false);
                 btnResetPassword.setText("Cancel");
-
             }
         });
         JButton btnSearch = new JButton("Search");
@@ -324,7 +274,83 @@ public class PanelManagementTeacher extends JPanel {
         txtPosition.setEditable(false);
         txtUsername.setEditable(false);
         txtPassword.setEditable(false);
-        txtSearch.setEditable(false);
+
+        //SEARCH
+        btnSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Object[]> results = TeacherDAO.SearchTeacher(txtSearch.getText());
+                tableModel.setRowCount(0);
+
+                for (Object[] student: results){
+                    int id = (int) student[0];
+                    String Name = (String) student[1];
+                    Date DoB = (Date) student[2];
+                    String Address = (String) student[3];
+                    String Phone = (String) student[4];
+                    String position = (String) student[5];
+                    String Username = (String) student[6];
+                    String Password = (String) student[7];
+
+                    Object[] data = new Object[] {id, Name, DoB, Address, Phone, position,Username, Password};
+                    tableModel.addRow(data);
+                }
+
+                tableModel.fireTableDataChanged();
+
+            }
+        });
+        //SAVE
+        btnSave.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                String name = txtName.getText();
+                Date DoB = null;
+                try {
+                    DoB = new SimpleDateFormat("yyyy-MM-dd").parse(txtDoB.getText());
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
+                String address = txtAddress.getText();
+                String phone = txtPhone.getText();
+                String position = txtPosition.getText();
+                String username = txtUsername.getText();
+                String password = txtPassword.getText();
+
+                if(isCreate){
+                    TeacherDAO.AddNewTeacher(name,DoB,address,phone,position,username, password);
+                }
+                else {
+                    TeacherDAO.UpdateTeacher(txtID.getText(),name,DoB,address,phone,position,username);
+                }
+
+
+                ReloadTable(tableModel);
+
+                setStatus(btnSave,false);
+                setText("");
+                btnResetPassword.setText("Reset password");
+                btnResetPassword.setEnabled(false);
+            }
+        });
+
+        itmenuEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isCreate = false;
+                setStatus(btnSave,true);
+                btnResetPassword.setText("Cancel");
+            }
+        });
+
+        itmenuDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TeacherDAO.DeleteTeacher(Integer.parseInt(table_2.getValueAt(table_2.getSelectedRow(),0).toString()));
+                ReloadTable(tableModel);
+            }
+        });
     }
 
     private static void addPopup(Component component, final JPopupMenu popup) {
@@ -343,5 +369,56 @@ public class PanelManagementTeacher extends JPanel {
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
         });
+
+
+    }
+
+    public void setStatus(JButton btnSave,boolean status){
+        txtName.setEditable(status);
+
+        txtDoB.setEditable(status);
+
+        txtAddress.setEditable(status);
+
+        txtPhone.setEditable(status);
+
+        txtPosition.setEditable(status);
+
+        txtUsername.setEditable(status);
+
+        btnSave.setEnabled(status);
+    }
+
+    public void setText(String str){
+        txtID.setText("");
+        txtName.setText("");
+        txtDoB.setText("");
+        txtAddress.setText("");
+        txtPhone.setText("");
+        txtPosition.setText("");
+        txtUsername.setText("");
+        txtPassword.setText("");
+    }
+
+    public static void ReloadTable(DefaultTableModel tableModel){
+        List<TeacherEntity> teachers = TeacherDAO.getAllSTeacher();
+        tableModel.setRowCount(0);
+        for (var teacher:teachers) {
+            int id = teacher.getId();
+            String Name = teacher.getTeacherName();
+            Date DoB = teacher.getDateOfBitrh();
+            String Address = teacher.getAddress();
+            String Phone = teacher.getPhone();
+            String Position = teacher.getPosition();
+            String Username = teacher.getUsername();
+            String Password = teacher.getPassword();
+
+
+            Object[] data = {id, Name, DoB,Address,Phone, Position, Username, Password};
+
+            tableModel.addRow(data);
+
+        }
+        tableModel.fireTableDataChanged();
     }
 }

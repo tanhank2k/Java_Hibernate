@@ -5,31 +5,25 @@ import com.DAO.TeacherDAO;
 import com.Model.SubjectEntity;
 import com.Model.TeacherEntity;
 
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JButton;
 
 import java.awt.Component;
 import java.awt.GridLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 import java.util.List;
 
 public class PanelManagementSubject extends JPanel {
+    private  boolean isCreate = true;
     private JTextField txtID;
     private JTextField txtName;
     private JTextField txtCode;
@@ -39,7 +33,7 @@ public class PanelManagementSubject extends JPanel {
     /**
      * Create the panel.
      */
-    public PanelManagementSubject() {
+    public PanelManagementSubject(JFrame jFrame) {
         setLayout(null);
 
         JPanel contentPane = new JPanel();
@@ -89,9 +83,9 @@ public class PanelManagementSubject extends JPanel {
         table_2.setModel(tableModel);
         scrollPane.setViewportView(table_2);
 
-        table_2.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        table_2.addMouseListener(new MouseAdapter() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void mousePressed(MouseEvent e) {
                 txtID.setText(table_2.getValueAt(table_2.getSelectedRow(),0).toString());
                 txtName.setText(table_2.getValueAt(table_2.getSelectedRow(),1).toString());
                 txtCode.setText(table_2.getValueAt(table_2.getSelectedRow(),2).toString());
@@ -179,6 +173,110 @@ public class PanelManagementSubject extends JPanel {
         btnCancel.setBounds(571, 167, 85, 21);
         contentPane.add(btnCancel);
 
+        btnCancel.setVisible(false);
+        btnSave.setEnabled(false);
+        txtID.setEditable(false);
+        setStatus(btnSave,btnCancel,false);
+
+
+        btnNewSubject.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isCreate = true;
+                setStatus(btnSave,btnCancel,true);
+
+            }
+        });
+
+        btnSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String Name = txtName.getText();
+                String Code= txtCode.getText();
+                int credits = Integer.parseInt(txtCredits.getText());
+                if (isCreate){
+
+                    SubjectDAO.AddNewSubject(Name,Code,credits);
+
+                }else {
+                    SubjectDAO.UpdateSubject(txtID.getText(),Name,Code,credits);
+                }
+
+                Reload(tableModel);
+                setText("");
+                setStatus(btnSave,btnCancel,false);
+            }
+
+        });
+
+        btnCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtID.setText("");
+                setText("");
+                setStatus(btnSave,btnCancel,false);
+            }
+        });
+
+        itmenuNew.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isCreate = true;
+                setStatus(btnSave,btnCancel,true);
+                setText("");
+                txtID.setText("");
+            }
+        });
+
+        itmenuEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isCreate = false;
+                setStatus(btnSave,btnCancel, true);
+            }
+        });
+
+        itmenuDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SubjectDAO.DeleteSubject(Integer.parseInt(table_2.getValueAt(table_2.getSelectedRow(),0).toString()));
+                Reload(tableModel);
+                setText("");
+            }
+        });
+
+        btnSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String search = txtSearch.getText();
+                List<Object[]> results = SubjectDAO.SearchSubject(search);
+
+                tableModel.setRowCount(0);
+                for (Object[] subject:results) {
+                    int id = (int) subject[0];
+                    String Name = (String) subject[1];
+                    String code = (String) subject[2];
+                    int credits = (int) subject[3];
+
+
+                    Object[] data = {id, Name, code, credits};
+
+                    tableModel.addRow(data);
+
+                }
+
+                tableModel.fireTableDataChanged();
+            }
+        });
+
+        btnExit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jFrame.setContentPane(new PanelMainScreenTeacher(jFrame));
+                jFrame.setVisible(true);
+            }
+        });
+
     }
 
     private static void addPopup(Component component, final JPopupMenu popup) {
@@ -197,6 +295,44 @@ public class PanelManagementSubject extends JPanel {
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
         });
+    }
+
+    public void setStatus(JButton btnSave, JButton btnCancel, boolean status){
+
+        txtName.setEditable(status);
+        txtCode.setEditable(status);
+        txtCredits.setEditable(status);
+        btnCancel.setVisible(status);
+        btnSave.setVisible(status);
+        btnSave.setEnabled(status);
+
+    }
+
+    public void setText(String str){
+        txtID.setText(str);
+        txtName.setText(str);
+        txtCode.setText(str);
+        txtCredits.setText(str);
+    }
+
+    public void Reload(DefaultTableModel tableModel){
+
+        List<SubjectEntity> subjects = SubjectDAO.getAllSubject();
+        tableModel.setRowCount(0);
+        for (var subject:subjects) {
+            int id = subject.getId();
+            String Name = subject.getSubjectName();
+            String code = subject.getSubjectCode();
+            int credits = subject.getNumberOfCredits();
+
+
+            Object[] data = {id, Name, code, credits};
+
+            tableModel.addRow(data);
+
+        }
+
+        tableModel.fireTableDataChanged();
     }
 
 }

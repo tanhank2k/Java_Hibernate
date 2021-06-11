@@ -143,5 +143,73 @@ public class SemesterDAO {
         }
 
     }
+
+    public static void SetPresentSemester(int ID){
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql = "UPDATE Semester Set isPresent = false";
+            SQLQuery query = session.createSQLQuery(sql);
+            query.executeUpdate();
+
+            sql = "UPDATE Semester Set isPresent = true where id=:id";
+            query= session.createSQLQuery(sql);
+            query.setParameter("id",ID);
+            query.executeUpdate();
+
+            tx.commit();
+            factory.close();
+
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+    }
+
+    public static Object[] getSemesterCurr(){
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql = "SELECT * From Semester Where  isPresent = true";
+            Query query= session.createSQLQuery(sql);
+
+            List<Object[]> result =  query.list();
+
+
+            tx.commit();
+            factory.close();
+            if (result.size()>0){
+                return result.get(0);
+            }
+
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+        return new Object[] {} ;
+    }
+
 }
 

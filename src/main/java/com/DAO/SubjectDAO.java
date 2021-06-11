@@ -1,7 +1,7 @@
 package com.DAO;
 
 import com.Model.SubjectEntity;
-import com.Model.TeacherEntity;
+import com.Model.SubjectEntity;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -44,7 +44,7 @@ public class SubjectDAO {
         return new ArrayList<>();
     }
 
-    public static void AddNewSemester(String semester, int year, Date dateStart, Date dateEnd){
+    public static void AddNewSubject(String SubjectName, String SubjectCode, int NoC){
         try {
             factory = new Configuration().configure().buildSessionFactory();
         } catch (Throwable ex) {
@@ -56,12 +56,43 @@ public class SubjectDAO {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            String sql = "insert into Semester(semesterName,year,dateStart,dateEnd)values(?,?,?,?)";
+
+            String sql = "insert into Subject(SubjectName, SubjectCode, numberOfCredits)values(?,?,?)";
+            Query query = session.createSQLQuery(sql);
+
+            query.setParameter(1,SubjectName);
+            query.setParameter(2,SubjectCode);
+            query.setParameter(3,NoC);
+            query.executeUpdate();
+
+            tx.commit();
+            factory.close();
+
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+
+    }
+
+    public static void DeleteSubject(int ID){
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql = "DELETE FROM Subject WHERE id=?";
             SQLQuery query = session.createSQLQuery(sql);
-            query.setParameter(1,semester);
-            query.setParameter(2,year);
-            query.setParameter(3,dateStart);
-            query.setParameter(4,dateEnd);
+            query.setParameter(1,ID);
 
             query.executeUpdate();
 
@@ -78,7 +109,7 @@ public class SubjectDAO {
 
     }
 
-    public static void DeleteSemester(String semester, int year, Date dateStart, Date dateEnd){
+    public static void UpdateSubject(String ID, String SubjectName, String SubjectCode, int NoC){
         try {
             factory = new Configuration().configure().buildSessionFactory();
         } catch (Throwable ex) {
@@ -90,12 +121,15 @@ public class SubjectDAO {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            String sql = "DELETE FROM Semester WHERE semesterName=? and year=? and dateStart=? and dateEnd=?";
-            SQLQuery query = session.createSQLQuery(sql);
-            query.setParameter(1,semester);
-            query.setParameter(2,year);
-            query.setParameter(3,dateStart);
-            query.setParameter(4,dateEnd);
+
+            String sql_update = "UPDATE Subject " +
+                    "Set SubjectName =:name,SubjectCode=:code, numberofcredits=:noc " +
+                    "WHERE id=:id";
+            Query query = session.createSQLQuery(sql_update);
+            query.setParameter("name",SubjectName);
+            query.setParameter("code",SubjectCode);
+            query.setParameter("noc",NoC);
+            query.setParameter("id",ID);
             query.executeUpdate();
 
             tx.commit();
@@ -111,7 +145,7 @@ public class SubjectDAO {
 
     }
 
-    public static void UpdateSemester(int ID,String semester, int year, Date dateStart, Date dateEnd){
+    public static List<Object[]> SearchSubject(String SubjectName){
         try {
             factory = new Configuration().configure().buildSessionFactory();
         } catch (Throwable ex) {
@@ -123,12 +157,53 @@ public class SubjectDAO {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            String sql = "UPDATE Semester Set semesterName=:name,year=:year,dateStart=:start,dateEnd=:end WHERE id=:id";
+            String sql = "";
+
+            sql = "SELECT Subject.id,Subject.SubjectName," +
+                    " Subject.SubjectCode, Subject.numberofcredits " +
+                    "From Subject " +
+                    "WHERE Subject.SubjectName like :name";
+
             SQLQuery query = session.createSQLQuery(sql);
-            query.setParameter("name",semester);
-            query.setParameter("year",year);
-            query.setParameter("start",dateStart);
-            query.setParameter("end",dateEnd);
+            query.setParameter("name","%" + SubjectName + "%");
+            List<Object[]> results = query.list();
+            tx.commit();
+            factory.close();
+
+            return results;
+
+
+
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+
+
+        return new ArrayList<>();
+
+    }
+
+    public static void ResetPassword(int ID){
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+
+
+            String sql_update = "UPDATE Subject Set password = 123456789 " +
+                    "WHERE id=:id";
+            Query query = session.createSQLQuery(sql_update);
             query.setParameter("id",ID);
             query.executeUpdate();
 

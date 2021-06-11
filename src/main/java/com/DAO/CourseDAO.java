@@ -45,7 +45,7 @@ public class CourseDAO {
         return new ArrayList<>();
     }
 
-    public static void AddNewSemester(String semester, int year, Date dateStart, Date dateEnd){
+    public static List<Object[]> getAllCourseInCurr(){
         try {
             factory = new Configuration().configure().buildSessionFactory();
         } catch (Throwable ex) {
@@ -57,12 +57,66 @@ public class CourseDAO {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            String sql = "insert into Semester(semesterName,year,dateStart,dateEnd)values(?,?,?,?)";
+            int idSemester = (int) SemesterDAO.getSemesterCurr()[0];
+            String sql = "Select* From Course Where idSemester = ?";
             SQLQuery query = session.createSQLQuery(sql);
-            query.setParameter(1,semester);
-            query.setParameter(2,year);
-            query.setParameter(3,dateStart);
-            query.setParameter(4,dateEnd);
+            query.setParameter(1,idSemester);
+            List<Object[]> results = query.list();
+
+            tx.commit();
+            factory.close();
+
+            return results;
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+
+        return new ArrayList<>();
+
+    }
+    public static void AddNewCourse(String SubjectCode, String TeacherName, String Room, String DateOnSchool, int Period,  int StudentMax){
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql_subject = "Select Subject.SubjectCode, Subject.SubjectName,Subject.numberofcredits, Subject.id From Subject WHERE Subject.SubjectCode = ?";
+            SQLQuery query = session.createSQLQuery(sql_subject);
+            query.setParameter(1,SubjectCode);
+            List<Object[]> result =  query.list();
+            String code = (String) result.get(0)[0];
+            String subName = (String) result.get(0)[1];
+            int NoC = (int) result.get(0)[2];
+            int idSub = (int) result.get(0)[3];
+
+            Object[] semesterCurr =  SemesterDAO.getSemesterCurr();
+            String semCur = (String) semesterCurr[4];
+            int year = (int) semesterCurr[5];
+            int idSem = (int) semesterCurr[0];
+
+            String sql = "insert into Course(subjectCode, subjectName, numberofcredits, " +
+                    "teacherName, roomName, dateonschool, period , idSemester, idSubject,studentMaximum)values(?,?,?,?,?,?,?,?,?,?)";
+            query = session.createSQLQuery(sql);
+            query.setParameter(1,code);
+            query.setParameter(2,subName);
+            query.setParameter(3,NoC);
+            query.setParameter(4,TeacherName);
+            query.setParameter(5,Room);
+            query.setParameter(6,DateOnSchool);
+            query.setParameter(7,Period);
+            query.setParameter(8,idSem);
+            query.setParameter(9,idSub);
+            query.setParameter(10,StudentMax);
 
             query.executeUpdate();
 
@@ -79,7 +133,7 @@ public class CourseDAO {
 
     }
 
-    public static void DeleteSemester(String semester, int year, Date dateStart, Date dateEnd){
+    public static void DeleteCourse(String ID){
         try {
             factory = new Configuration().configure().buildSessionFactory();
         } catch (Throwable ex) {
@@ -91,12 +145,10 @@ public class CourseDAO {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            String sql = "DELETE FROM Semester WHERE semesterName=? and year=? and dateStart=? and dateEnd=?";
+            String sql = "DELETE FROM Course WHERE id=?";
             SQLQuery query = session.createSQLQuery(sql);
-            query.setParameter(1,semester);
-            query.setParameter(2,year);
-            query.setParameter(3,dateStart);
-            query.setParameter(4,dateEnd);
+            query.setParameter(1,ID);
+
             query.executeUpdate();
 
             tx.commit();
@@ -112,7 +164,9 @@ public class CourseDAO {
 
     }
 
-    public static void UpdateSemester(int ID,String semester, int year, Date dateStart, Date dateEnd){
+
+
+    public static List<Object[]> SearchCourse(String Course){
         try {
             factory = new Configuration().configure().buildSessionFactory();
         } catch (Throwable ex) {
@@ -124,17 +178,19 @@ public class CourseDAO {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            String sql = "UPDATE Semester Set semesterName=:name,year=:year,dateStart=:start,dateEnd=:end WHERE id=:id";
-            SQLQuery query = session.createSQLQuery(sql);
-            query.setParameter("name",semester);
-            query.setParameter("year",year);
-            query.setParameter("start",dateStart);
-            query.setParameter("end",dateEnd);
-            query.setParameter("id",ID);
-            query.executeUpdate();
 
-            tx.commit();
-            factory.close();
+            String sql = "SELECT * " +
+                        "From Course " +
+                        "WHERE Course.subjectCode like :name or Course.SubjectName like:name";
+
+                SQLQuery query = session.createSQLQuery(sql);
+                query.setParameter("name","%" + Course + "%");
+                List<Object[]> results = query.list();
+                tx.commit();
+                factory.close();
+
+                return results;
+
 
         }
         catch (Throwable ex){
@@ -144,5 +200,10 @@ public class CourseDAO {
             ex.printStackTrace();
         }
 
+
+        return new ArrayList<>();
+
     }
+
+
 }

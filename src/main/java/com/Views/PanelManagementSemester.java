@@ -5,8 +5,6 @@ import com.Model.SemesterEntity;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.text.ParseException;
@@ -21,9 +19,12 @@ public class PanelManagementSemester extends JPanel {
     private JTextField txtYear;
     private JTextField txtDateStart;
     private JTextField txtDateEnd;
+    private JTextField txtSemesterCurr;
+    private JTextField txtYearCurr;
 
     /**
      * Create the panel.
+     *
      */
     public PanelManagementSemester(JFrame frame) {
         setLayout(null);
@@ -153,6 +154,32 @@ public class PanelManagementSemester extends JPanel {
         txtDateEnd.setEditable(false);
 
 
+        JLabel lblNewLabel = new JLabel("Semester Current ");
+        lblNewLabel.setBounds(10, 32, 110, 13);
+        contentPane.add(lblNewLabel);
+
+        txtSemesterCurr = new JTextField();
+        txtSemesterCurr.setBounds(120, 29, 96, 19);
+        contentPane.add(txtSemesterCurr);
+        txtSemesterCurr.setColumns(10);
+        txtSemesterCurr.setEditable(false);
+
+        JLabel lblYear_1 = new JLabel("Year");
+        lblYear_1.setBounds(288, 33, 49, 13);
+        contentPane.add(lblYear_1);
+
+        txtYearCurr = new JTextField();
+        txtYearCurr.setColumns(10);
+        txtYearCurr.setBounds(322, 32, 68, 19);
+        txtYearCurr.setEditable(false);
+        contentPane.add(txtYearCurr);
+
+        Object[] semesterCurr = SemesterDAO.getSemesterCurr();
+        if (semesterCurr.length>0){
+            txtSemesterCurr.setText(semesterCurr[4].toString());
+            txtYearCurr.setText(semesterCurr[5].toString());
+        }
+
         JButton btnCreate = new JButton("New Semester");
         btnCreate.setMargin(new Insets(2, 2, 2, 2));
         btnCreate.setBounds(375, 287, 100, 21);
@@ -277,6 +304,15 @@ public class PanelManagementSemester extends JPanel {
             }
         });
 
+        itmenuSetSemesterCurr.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SemesterDAO.SetPresentSemester(Integer.parseInt(table.getValueAt(table.getSelectedRow(),0).toString()));
+
+                txtSemesterCurr.setText(table.getValueAt(table.getSelectedRow(),1).toString());
+                txtYearCurr.setText(table.getValueAt(table.getSelectedRow(),2).toString());
+            }
+        });
         itmenuEdit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -306,6 +342,7 @@ public class PanelManagementSemester extends JPanel {
                 btnCancel.setVisible(true);
             }
         });
+
         itmenuDelete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
