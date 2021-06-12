@@ -1,5 +1,6 @@
 package com.Views;
 
+import com.DAO.StudentDAO;
 import com.DAO.TeacherDAO;
 
 import java.awt.*;
@@ -87,19 +88,64 @@ public class LoginScreen extends JFrame {
                 String user = txtUserName.getText();
                 String pass = String.valueOf(txtPassword.getPassword());
 
-                boolean result = TeacherDAO.SignIn(user,pass);
-                if (result){
-                    LoginScreen.this.dispose();
-                    JFrame frame = new JFrame();
-                    frame.setBounds(100, 100, 786, 390);
-                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    frame.getContentPane().setLayout(new CardLayout(0,0));
-                    frame.add(new PanelMainScreenTeacher(frame));
-                    frame.setVisible(true);
+                String role = comboBoxRole.getSelectedItem().toString();
+                if (role.equals("Teacher")){
+                    Object[] result = TeacherDAO.SignIn(user,pass);
+                    if (result.length>0){
+                        LoginScreen.this.dispose();
+                        JFrame frame = new JFrame();
+                        frame.setBounds(100, 100, 786, 410);
+                        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        frame.getContentPane().setLayout(new CardLayout(0,0));
+                        frame.add(new PanelMainScreenTeacher(frame));
+                        JMenuBar menuBar = new JMenuBar();
+                        frame.setJMenuBar(menuBar);
+
+                        JMenu menuName = new JMenu("New menu");
+                        menuBar.add(menuName);
+
+                        JMenuItem itmenuProfile = new JMenuItem("Profile");
+                        menuName.add(itmenuProfile);
+
+                        JMenuItem itmenuSignOut = new JMenuItem("Sign out");
+                        menuName.add(itmenuSignOut);
+
+                        itmenuProfile.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                frame.dispose();
+                                Profile profile = new Profile((Integer) result[0],"Teacher");
+                                profile.setVisible(true);
+                            }
+                        });
+                        itmenuSignOut.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                frame.dispose();
+                                LoginScreen loginScreen = new LoginScreen();
+                                loginScreen.setVisible(true);
+                            }
+                        });
+                        frame.setVisible(true);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(LoginScreen.this, "Username or password incorrect!!!.");
+                    }
                 }
-                else {
-                    JOptionPane.showMessageDialog(LoginScreen.this, "Username or password incorrect!!!.");
+                else{
+                    Object[] result = StudentDAO.SignIn(user,pass);
+                    if (result.length>0){
+                        LoginScreen.this.dispose();
+                        PanelMainStudent mainStudent = new PanelMainStudent((Integer) result[0]);
+                        mainStudent.setVisible(true);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(LoginScreen.this, "Username or password incorrect!!!.");
+
+                    }
+
                 }
+
             }
         });
     }

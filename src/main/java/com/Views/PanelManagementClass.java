@@ -171,10 +171,6 @@ public class PanelManagementClass extends JPanel {
         add(btnSave);
         btnSave.setEnabled(false);
 
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(SystemColor.textHighlight);
-        menuBar.setBounds(0, 0, 772, 22);
-        add(menuBar);
 
         JLabel lblNewLabel = new JLabel("Class Information");
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));

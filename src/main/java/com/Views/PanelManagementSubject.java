@@ -151,10 +151,6 @@ public class PanelManagementSubject extends JPanel {
         btnSave.setBounds(677, 167, 85, 21);
         contentPane.add(btnSave);
 
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(SystemColor.textHighlight);
-        menuBar.setBounds(0, 0, 772, 22);
-        contentPane.add(menuBar);
 
         JLabel lblNewLabel = new JLabel("Subject");
         lblNewLabel.setBounds(10, 33, 45, 13);

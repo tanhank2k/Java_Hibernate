@@ -55,7 +55,7 @@ public class SemesterDAO {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            String sql = "insert into Semester(semesterName,year,dateStart,dateEnd)values(?,?,?,?)";
+            String sql = "insert into Semester(semesterName,year,dateStart,dateEnd, ispresent)values(?,?,?,?,false )";
             SQLQuery query = session.createSQLQuery(sql);
             query.setParameter(1,semester);
             query.setParameter(2,year);

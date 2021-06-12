@@ -21,7 +21,7 @@ public class SubjectEntity {
     private Integer id;
 
       
-    @Column(name = "subjectCode", nullable = false, length = 255)
+    @Column(name = "subjectCode", nullable = false, length = 255, unique = true)
     private String subjectCode;
 
       

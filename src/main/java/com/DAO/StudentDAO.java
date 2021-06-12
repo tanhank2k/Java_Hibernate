@@ -209,6 +209,50 @@ public class StudentDAO {
         }
 
     }
+    public static void UpdateStudentPass(String MSSV,String StudentName, String ClassName, String Gender, Date DoB, String Address, String Phone, String Username,String pass){
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql_idClass = "Select Class.id  From Class WHERE Class.className = ?";
+            SQLQuery query = session.createSQLQuery(sql_idClass);
+            query.setParameter(1,ClassName);
+            List result =  query.list();
+            int id = (int) result.get(0);
+
+            String sql_update = "UPDATE Student " +
+                    "Set studentName =:name, Gender=:gender,dateOfBitrh=:dob, address=:address,phone=:phone,username=:username, password=:pass " +
+                    "WHERE MSSV=:id";
+            query = session.createSQLQuery(sql_update);
+            query.setParameter("name",StudentName);
+            query.setParameter("gender",Gender);
+            query.setParameter("dob",DoB);
+            query.setParameter("address",Address);
+            query.setParameter("phone",Phone);
+            query.setParameter("username",Username);
+            query.setParameter("id",MSSV);
+            query.setParameter("pass",pass);
+            query.executeUpdate();
+
+            tx.commit();
+            factory.close();
+
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+
+    }
 
     public static List<Object[]> SearchStudent(String StudentName, String ClassName){
         try {
@@ -304,5 +348,79 @@ public class StudentDAO {
             ex.printStackTrace();
         }
 
+    }
+
+    public static Object[] SignIn(String username, String password){
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql_idClass = "";
+            String sql = "SELECT *  From student  WHERE student.username = :user and student.password =:pass";
+
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setParameter("user",username);
+            query.setParameter("pass",password);
+            List<Object[]> results = query.list();
+            tx.commit();
+            factory.close();
+
+            if (results.size()>0){
+                return results.get(0);
+            }
+
+
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+        return new Object[]{};
+
+
+
+    }
+    public static Object[] getStudent(int id){
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql = "SELECT * From student Where  id = :id";
+            Query query= session.createSQLQuery(sql);
+            query.setParameter("id", id);
+            List<Object[]> result =  query.list();
+
+
+            tx.commit();
+            factory.close();
+            if (result.size()>0){
+
+                return result.get(0);
+            }
+
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+        return new Object[] {} ;
     }
 }

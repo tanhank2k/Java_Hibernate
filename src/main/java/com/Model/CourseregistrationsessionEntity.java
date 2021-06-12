@@ -16,8 +16,11 @@ import java.util.Objects;
 public class CourseregistrationsessionEntity {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "NameCRS", nullable = false)
+    private String nameCRS;
       
     @Column(name = "dateStart", nullable = false)
     private Date dateStart;

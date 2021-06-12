@@ -59,7 +59,11 @@ public class CourseEntity {
     @ManyToOne
     @JoinColumn(name = "idSubject", referencedColumnName = "id")
     private SubjectEntity subjectByIdSubject;
-    
+
+    @ManyToOne
+    @JoinColumn(name = "CRS", referencedColumnName = "id")
+    private CourseregistrationsessionEntity CourseregistrationsessiontByIdCRS;
+
     @OneToMany(mappedBy = "idCourse")
     private Collection<StudentregistercourseEntity> studentregistercoursesById;
 

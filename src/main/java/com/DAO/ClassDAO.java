@@ -46,6 +46,38 @@ public class ClassDAO {
         return new ArrayList<>();
     }
 
+    public static String getClassName(int idClass){
+        String[] result = {""};
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql = "select c.className From ClazzEntity c where c.id = :id";
+            Query query = session.createQuery(sql);
+            query.setParameter("id",idClass);
+            List<String> clazzNames = query.list();
+
+            tx.commit();
+            session.close();
+            String classNames = clazzNames.get(0);
+            return classNames;
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+        return "";
+    }
+
     public static String[] getAllClassName(){
         String[] result = {""};
         try {

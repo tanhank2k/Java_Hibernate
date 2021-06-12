@@ -108,6 +108,38 @@ public class SubjectDAO {
         }
 
     }
+    public static String[] getAllSubCode(){
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql = "Select SubjectCode  FROM Subject";
+            SQLQuery query = session.createSQLQuery(sql);
+            List<String> result = query.list();
+
+            String[] str = result.toArray(new String[0]);
+
+            tx.commit();
+            factory.close();
+
+            return str;
+
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+        return new String[]{};
+    }
 
     public static void UpdateSubject(String ID, String SubjectName, String SubjectCode, int NoC){
         try {
@@ -187,36 +219,4 @@ public class SubjectDAO {
 
     }
 
-    public static void ResetPassword(int ID){
-        try {
-            factory = new Configuration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
-
-        Session session = factory.openSession();
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-
-
-            String sql_update = "UPDATE Subject Set password = 123456789 " +
-                    "WHERE id=:id";
-            Query query = session.createSQLQuery(sql_update);
-            query.setParameter("id",ID);
-            query.executeUpdate();
-
-            tx.commit();
-            factory.close();
-
-        }
-        catch (Throwable ex){
-            if (tx != null){
-                tx.rollback();
-            }
-            ex.printStackTrace();
-        }
-
-    }
 }

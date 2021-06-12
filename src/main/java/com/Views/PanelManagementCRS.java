@@ -1,14 +1,27 @@
 package com.Views;
 
+import com.DAO.CRS_DAO;
+import com.DAO.SemesterDAO;
+import com.DAO.SubjectDAO;
+import com.Model.CourseregistrationsessionEntity;
+import com.Model.SubjectEntity;
+import lombok.SneakyThrows;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Component;
 import java.awt.Font;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class PanelManagementCRS extends JPanel {
     private JTextField txtID;
@@ -45,18 +58,30 @@ public class PanelManagementCRS extends JPanel {
             }
         });
         scrollPane.setViewportView(table_2);
-        table_2.setModel(new DefaultTableModel(
-                new Object[][] {
-                        {null, null, "", null, null, null},
-                        {null, null, null, null, null, null},
-                        {null, "", null, null, null, null},
-                        {null, null, null, null, null, null},
-                        {null, "", null, null, null, null},
-                },
-                new String[] {
+        DefaultTableModel tableModel = new DefaultTableModel(new String[] {
                         "ID", "Name CRS", "Semester", "Year", "Date Start", "Date End"
-                }
-        ));
+                },0
+        );
+
+        List<CourseregistrationsessionEntity> CRSessions = CRS_DAO.getAllSession();
+        Object[] semesterCurr = SemesterDAO.getSemesterCurr();
+        String Semester = (String) semesterCurr[4];
+        int Year = (int) semesterCurr[5];
+        for (var sesseion:CRSessions) {
+            int id = sesseion.getId();
+            String Name = sesseion.getNameCRS();
+            Date start = sesseion.getDateStart();
+            Date end = sesseion.getDateEnd();
+
+            Object[] data = {id, Name, Semester, Year,start,end};
+
+            tableModel.addRow(data);
+
+        }
+
+        tableModel.fireTableDataChanged();
+
+        table_2.setModel(tableModel);
         table_2.getColumnModel().getColumn(1).setPreferredWidth(221);
         table_2.getColumnModel().getColumn(2).setPreferredWidth(84);
         table_2.getColumnModel().getColumn(5).setPreferredWidth(100);
@@ -66,9 +91,6 @@ public class PanelManagementCRS extends JPanel {
 
         JMenuItem itmenuNew = new JMenuItem("New");
         popupMenu.add(itmenuNew);
-
-        JMenuItem itmenuEdit = new JMenuItem("Edit");
-        popupMenu.add(itmenuEdit);
 
         JMenuItem itmenuDelete = new JMenuItem("Delete");
         popupMenu.add(itmenuDelete);
@@ -145,11 +167,6 @@ public class PanelManagementCRS extends JPanel {
         btnSave.setBounds(677, 257, 85, 21);
         contentPane.add(btnSave);
 
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(SystemColor.textHighlight);
-        menuBar.setBounds(0, 0, 772, 22);
-        contentPane.add(menuBar);
-
         JLabel lblNewLabel = new JLabel("Semester Current");
         lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
         lblNewLabel.setBounds(10, 32, 115, 13);
@@ -176,6 +193,72 @@ public class PanelManagementCRS extends JPanel {
         btnCancel.setBounds(582, 257, 85, 21);
         contentPane.add(btnCancel);
 
+        setStatus(btnSave, btnCancel, false);
+        txtID.setEditable(false);
+        txtSemester.setEditable(false);
+        txtYear.setEditable(false);
+
+        table_2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                txtID.setText(table_2.getValueAt(table_2.getSelectedRow(),0).toString());
+                txtName.setText(table_2.getValueAt(table_2.getSelectedRow(),1).toString());
+                txtSemester.setText(table_2.getValueAt(table_2.getSelectedRow(),2).toString());
+                txtYear.setText(table_2.getValueAt(table_2.getSelectedRow(),3).toString());
+                txtStart.setText(table_2.getValueAt(table_2.getSelectedRow(),4).toString());
+                txtEnd.setText(table_2.getValueAt(table_2.getSelectedRow(),5).toString());
+            }
+        });
+        btnNewCRS.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setText("");
+                setStatus(btnSave,btnCancel,true);
+                txtSemester.setText(Semester);
+                txtYear.setText(String.valueOf(Year));
+
+            }
+        });
+
+        btnSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String Name = txtName.getText();
+
+                Date start = null;
+                try {
+                    start = new SimpleDateFormat("yyyy-MM-dd").parse(txtStart.getText());
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
+                Date end = null;
+                try {
+                    end = new SimpleDateFormat("yyyy-MM-dd").parse(txtEnd.getText());
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
+
+                CRS_DAO.AddNewSession(Name,start,end);
+                Reload(tableModel);
+
+            }
+        });
+
+        btnCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus(btnSave,btnCancel, false);
+                setText("");
+            }
+        });
+
+        btnExit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jFrame.setContentPane(new PanelMainScreenTeacher(jFrame));
+                jFrame.setVisible(true);
+            }
+        });
     }
     private static void addPopup(Component component, final JPopupMenu popup) {
         component.addMouseListener(new MouseAdapter() {
@@ -194,5 +277,47 @@ public class PanelManagementCRS extends JPanel {
             }
         });
     }
+
+    public void setStatus(JButton btnSave, JButton btnCancel, boolean status){
+        //txtID.setEditable(status);
+        txtName.setEditable(status);
+        //txtSemester.setEditable(status);
+        //txtYear.setEditable(status);
+        txtStart.setEditable(status);
+        txtEnd.setEditable(status);
+        btnSave.setVisible(status);
+        btnCancel.setVisible(status);
+    }
+
+    public void setText(String str){
+        txtID.setText(str);
+        txtName.setText(str);
+        txtSemester.setText(str);
+        txtYear.setText(str);
+        txtStart.setText(str);
+        txtEnd.setText(str);
+    }
+
+    public void Reload(DefaultTableModel tableModel){
+        List<CourseregistrationsessionEntity> CRSessions = CRS_DAO.getAllSession();
+        tableModel.setRowCount(0);
+        Object[] semesterCurr = SemesterDAO.getSemesterCurr();
+        String Semester = (String) semesterCurr[4];
+        int Year = (int) semesterCurr[5];
+        for (var sesseion:CRSessions) {
+            int id = sesseion.getId();
+            String Name = sesseion.getNameCRS();
+            Date start = sesseion.getDateStart();
+            Date end = sesseion.getDateEnd();
+
+
+            Object[] data = {id, Name, Semester, Year,start,end};
+
+            tableModel.addRow(data);
+
+        }
+        tableModel.fireTableDataChanged();
+    }
+
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
 public class TeacherDAO {
     private static SessionFactory factory;
 
-    public static boolean SignIn(String username, String password){
+    public static Object[] SignIn(String username, String password){
         try {
             factory = new Configuration().configure().buildSessionFactory();
         } catch (Throwable ex) {
@@ -39,8 +39,9 @@ public class TeacherDAO {
             factory.close();
 
             if (results.size()>0){
-                return true;
+                return results.get(0);
             }
+
 
 
 
@@ -51,7 +52,7 @@ public class TeacherDAO {
             }
             ex.printStackTrace();
         }
-        return false;
+        return new Object[] {} ;
     }
 
     public static List<TeacherEntity> getAllSTeacher(){
@@ -190,6 +191,80 @@ public class TeacherDAO {
         }
 
     }
+    public static void UpdateTeacherPass(String ID, String StudentName, Date DoB, String Address, String Phone, String Position, String Username, String Pass){
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+
+            String sql_update = "UPDATE Teacher " +
+                    "Set teacherName =:name,dateOfBitrh=:dob, address=:address,phone=:phone,position=:position ,username=:username, password=:pass " +
+                    "WHERE id=:id";
+            Query query = session.createSQLQuery(sql_update);
+            query.setParameter("name",StudentName);
+            query.setParameter("dob",DoB);
+            query.setParameter("address",Address);
+            query.setParameter("phone",Phone);
+            query.setParameter("username",Username);
+            query.setParameter("position",Position);
+            query.setParameter("id",ID);
+            query.setParameter("pass",Pass);
+            query.executeUpdate();
+
+            tx.commit();
+            factory.close();
+
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+
+    }
+
+    public static Object[] getTeacher(int id){
+        try {
+            factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql = "SELECT * From teacher Where  id = :id";
+            Query query= session.createSQLQuery(sql);
+            query.setParameter("id", id);
+            List<Object[]> result =  query.list();
+
+
+            tx.commit();
+            factory.close();
+            if (result.size()>0){
+                return result.get(0);
+            }
+
+        }
+        catch (Throwable ex){
+            if (tx != null){
+                tx.rollback();
+            }
+            ex.printStackTrace();
+        }
+        return new Object[] {} ;
+    }
+
 
     public static List<Object[]> SearchTeacher(String TeachName){
         try {

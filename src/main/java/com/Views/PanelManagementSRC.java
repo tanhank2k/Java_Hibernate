@@ -1,4 +1,7 @@
 package com.Views;
+import com.DAO.CourseDAO;
+import com.DAO.SRC_DAO;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -8,6 +11,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Component;
 import java.awt.Font;
+import java.util.Date;
+import java.util.List;
 
 public class PanelManagementSRC extends JPanel {
     private JTextField txtMSSV;
@@ -62,6 +67,26 @@ public class PanelManagementSRC extends JPanel {
         table_2.getColumnModel().getColumn(0).setPreferredWidth(69);
         table_2.getColumnModel().getColumn(1).setPreferredWidth(84);
         table_2.getColumnModel().getColumn(6).setPreferredWidth(115);
+
+        DefaultTableModel tableModel = (DefaultTableModel) table_2.getModel();
+
+        List<Object[]> students = SRC_DAO.getStudentInCourse("5");
+        tableModel.setRowCount(0);
+        for (Object[] student:students) {
+            int mssv = (int)student[0];
+            String subName = (String) student[2];
+            String subCode = (String) student[3];
+            String teacherName = (String) student[4];
+            String StudyTime = (String) student[5];
+            Date RegistrationTime = (Date) student[6];
+            String studentName = (String) student[1];
+
+
+
+            Object [] data = new Object[] {mssv,studentName,subName,subCode,teacherName,StudyTime,RegistrationTime};
+            tableModel.addRow(data);
+            tableModel.fireTableDataChanged();
+        }
 
         JPopupMenu popupMenu = new JPopupMenu();
         addPopup(table_2, popupMenu);
@@ -154,10 +179,7 @@ public class PanelManagementSRC extends JPanel {
         btnExit.setBounds(677, 318, 85, 21);
         contentPane.add(btnExit);
 
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(SystemColor.textHighlight);
-        menuBar.setBounds(0, 0, 772, 22);
-        contentPane.add(menuBar);
+
 
         JLabel lblNewLabel = new JLabel("Information");
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -186,6 +208,14 @@ public class PanelManagementSRC extends JPanel {
         lblNewLabel_5.setHorizontalAlignment(SwingConstants.RIGHT);
         lblNewLabel_5.setBounds(360, 35, 45, 13);
         contentPane.add(lblNewLabel_5);
+
+        btnExit.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                jFrame.setContentPane(new PanelMainScreenTeacher(jFrame));
+                jFrame.setVisible(true);
+            }
+        });
 
     }
 

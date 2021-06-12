@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "studentregistercourse",uniqueConstraints = {@UniqueConstraint(columnNames = {"idStudent","idCourse"})})
+@Table(name = "studentregistercourse",uniqueConstraints = {@UniqueConstraint(columnNames = {"idStudent","idCourse","idSession","idSemester"})})
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -26,6 +26,14 @@ public class StudentregistercourseEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "idCourse")
     private CourseEntity idCourse;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "idSession")
+    private CourseregistrationsessionEntity idSession;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "idSemester")
+    private SemesterEntity idSemester;
     
       
     @Column(name = "MSSV", nullable = true)

@@ -7,8 +7,10 @@ import java.awt.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +36,8 @@ public class PanelManagementSemester extends JPanel {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setBounds(0, 0, 772, 349);
         add(contentPane);
+
+
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(10, 56, 465, 222);
@@ -132,6 +136,11 @@ public class PanelManagementSemester extends JPanel {
         txtSemester.setBounds(62, 51, 131, 19);
         panel.add(txtSemester);
 
+        JComboBox boxSemester = new JComboBox(new String[]{"HKI","HKII","HKIII"});
+        boxSemester.setBounds(62, 51, 131, 19);
+        boxSemester.setVisible(false);
+        panel.add(boxSemester);
+
         txtYear = new JTextField();
         txtYear.setColumns(10);
         txtYear.setBounds(62, 92, 131, 19);
@@ -141,6 +150,7 @@ public class PanelManagementSemester extends JPanel {
         txtDateStart.setColumns(10);
         txtDateStart.setBounds(62, 133, 131, 19);
         panel.add(txtDateStart);
+
 
         txtDateEnd = new JTextField();
         txtDateEnd.setColumns(10);
@@ -197,25 +207,50 @@ public class PanelManagementSemester extends JPanel {
             }
         });
 
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(SystemColor.textHighlight);
-        menuBar.setBounds(0, 0, 772, 22);
-        contentPane.add(menuBar);
 
         JButton btnSave = new JButton("Save");
         btnSave.setBounds(677, 283, 85, 21);
         contentPane.add(btnSave);
         btnSave.setVisible(false);
         //Save
+
+        JButton btnCancel = new JButton("Cancel");
+        btnCancel.setBounds(582, 283, 85, 21);
+        contentPane.add(btnCancel);
+        btnCancel.setVisible(false);
+        btnCancel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                txtID.setEditable(false);
+                txtID.setText("");
+
+                txtSemester.setVisible(true);
+                boxSemester.setVisible(false);
+                txtSemester.setText("");
+
+                txtYear.setEditable(false);
+                txtYear.setText("");
+
+                txtDateStart.setEditable(false);
+                txtDateStart.setText("");
+
+                txtDateEnd.setEditable(false);
+                txtDateEnd.setText("");
+
+                btnSave.setVisible(false);
+                btnCancel.setVisible(false);
+            }
+        });
+
         btnSave.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Date start = null;
                 Date end = null;
-                String Semester = txtSemester.getText();
+                String Semester = boxSemester.getSelectedItem().toString();
                 int year = Integer.parseInt(txtYear.getText());
                 try {
-                     start = new SimpleDateFormat("yyyy-MM-dd").parse(txtDateStart.getText().toString());
+                    start = new SimpleDateFormat("yyyy-MM-dd").parse(txtDateStart.getText().toString());
                 } catch (ParseException parseException) {
                     parseException.printStackTrace();
                 }
@@ -251,33 +286,10 @@ public class PanelManagementSemester extends JPanel {
                 }
                 table.setModel(tableModel);
                 tableModel.fireTableDataChanged();
-            }
-        });
 
-        JButton btnCancel = new JButton("Cancel");
-        btnCancel.setBounds(582, 283, 85, 21);
-        contentPane.add(btnCancel);
-        btnCancel.setVisible(false);
-        btnCancel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                txtID.setEditable(false);
-                txtID.setText("");
-
-                txtSemester.setEditable(false);
-                txtSemester.setText("");
-
-                txtYear.setEditable(false);
-                txtYear.setText("");
-
-                txtDateStart.setEditable(false);
-                txtDateStart.setText("");
-
-                txtDateEnd.setEditable(false);
-                txtDateEnd.setText("");
-
-                btnSave.setVisible(false);
-                btnCancel.setVisible(false);
+                txtSemester.setVisible(true);
+                boxSemester.setVisible(false);
+                setStatus(btnSave,btnCancel, false);
             }
         });
 
@@ -287,7 +299,8 @@ public class PanelManagementSemester extends JPanel {
                 txtID.setEditable(true);
                 txtID.setText("");
 
-                txtSemester.setEditable(true);
+                txtSemester.setVisible(false);
+                boxSemester.setVisible(true);
                 txtSemester.setText("");
 
                 txtYear.setEditable(true);

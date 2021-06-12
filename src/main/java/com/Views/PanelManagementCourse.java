@@ -2,6 +2,7 @@ package com.Views;
 
 import com.DAO.CourseDAO;
 import com.DAO.SemesterDAO;
+import com.DAO.SubjectDAO;
 import com.Model.CourseEntity;
 
 import javax.swing.*;
@@ -32,6 +33,10 @@ public class PanelManagementCourse extends JPanel {
     private JTextField txtYear;
     private JTextField txtCourse;
     private JTextField txtSemesterCurr;
+    private JComboBox comPeriod;
+    private JComboBox SubCode;
+    private JComboBox DayOnWeek;
+
 
     /**
      * Create the panel.
@@ -100,7 +105,7 @@ public class PanelManagementCourse extends JPanel {
                 txtTeacherName.setText(table_2.getValueAt(table_2.getSelectedRow(),4).toString());
                 txtRoom.setText(table_2.getValueAt(table_2.getSelectedRow(),5).toString());
                 txtDoS.setText(table_2.getValueAt(table_2.getSelectedRow(),6).toString());
-                txtPeriod.setText(table_2.getValueAt(table_2.getSelectedRow(),7).toString());
+                comPeriod.setSelectedIndex((Integer) table_2.getValueAt(table_2.getSelectedRow(),7)-1);
                 txtStudentMax.setText(table_2.getValueAt(table_2.getSelectedRow(),8).toString());
             }
         });
@@ -148,7 +153,13 @@ public class PanelManagementCourse extends JPanel {
         txtSubjectCode = new JTextField();
         txtSubjectCode.setColumns(10);
         txtSubjectCode.setBounds(95, 29, 125, 18);
+        txtSubjectCode.setVisible(true);
         panel.add(txtSubjectCode);
+
+        SubCode = new JComboBox(SubjectDAO.getAllSubCode());
+        SubCode.setBounds(95, 29, 125, 18);
+        panel.add(SubCode);
+        SubCode.setVisible(false);
 
         JLabel lblNewLabel_2 = new JLabel("Subject Name");
         lblNewLabel_2.setBounds(0, 57, 125, 18);
@@ -195,6 +206,10 @@ public class PanelManagementCourse extends JPanel {
         txtDoS.setBounds(95, 170, 125, 18);
         panel.add(txtDoS);
 
+        DayOnWeek = new JComboBox(new String[]{"Mon","Tues","Wed","Thur","Fri","Sat","Sun"});
+        DayOnWeek.setBounds(95, 170, 125, 18);
+        panel.add(DayOnWeek);
+
         JLabel lblNewLabel_3_4 = new JLabel("Period");
         lblNewLabel_3_4.setBounds(0, 198, 125, 18);
         panel.add(lblNewLabel_3_4);
@@ -202,7 +217,15 @@ public class PanelManagementCourse extends JPanel {
         txtPeriod = new JTextField();
         txtPeriod.setColumns(10);
         txtPeriod.setBounds(95, 198, 125, 18);
+        txtPeriod.setVisible(false);
         panel.add(txtPeriod);
+
+        comPeriod = new JComboBox(new String[]{"7:30 – 9:30","9:30 – 11:30","13:30 – 15:30","15:30 – 17:30"});
+
+        comPeriod.setBounds(95, 198, 125, 18);
+        panel.add(comPeriod);
+        comPeriod.setVisible(true);
+
 
         JLabel lblNewLabel_3_5 = new JLabel("Student Maximum");
         lblNewLabel_3_5.setBounds(0, 226, 125, 18);
@@ -222,10 +245,6 @@ public class PanelManagementCourse extends JPanel {
         btnSave.setBounds(677, 328, 85, 21);
         contentPane.add(btnSave);
 
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(SystemColor.textHighlight);
-        menuBar.setBounds(0, 0, 772, 22);
-        contentPane.add(menuBar);
 
         JLabel lblNewLabel = new JLabel("Course Information");
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -291,16 +310,17 @@ public class PanelManagementCourse extends JPanel {
                 setStatus(btnSave, btnCancel,true);
                 setText("");
             }
+
         });
 
         btnSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String code = txtSubjectCode.getText();
+                String code = (String) SubCode.getSelectedItem();
                 String TeacherName = txtTeacherName.getText();
                 String Room = txtRoom.getText();
-                String DoS = txtDoS.getText();
-                int period = Integer.parseInt(txtPeriod.getText());
+                String DoS = (String) DayOnWeek.getSelectedItem();
+                int period = comPeriod.getSelectedIndex() + 1;
                 int StudentMax = Integer.parseInt(txtStudentMax.getText());
                 CourseDAO.AddNewCourse(code,TeacherName,Room,DoS,period,StudentMax);
 
@@ -389,11 +409,18 @@ public class PanelManagementCourse extends JPanel {
     public void setStatus(JButton btnSave, JButton btnCancel,boolean status){
 
         txtSubjectCode.setEditable(status);
+        txtSubjectCode.setVisible(!status);
+
         txtTeacherName.setEditable(status);
         txtRoom.setEditable(status);
+
         txtDoS.setEditable(status);
+        txtDoS.setVisible(!status);
+
         txtPeriod.setEditable(status);
         txtStudentMax.setEditable(status);
+        SubCode.setVisible(status);
+        DayOnWeek.setVisible(status);
 
         btnSave.setVisible(status);
         btnCancel.setVisible(status);
@@ -403,6 +430,7 @@ public class PanelManagementCourse extends JPanel {
     public void setText(String str){
         txtID.setText(str);
         txtSubjectCode.setText(str);
+
         txtSubjectName.setText(str);
         txtNoC.setText(str);
         txtTeacherName.setText(str);

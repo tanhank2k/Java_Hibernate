@@ -211,10 +211,6 @@ public class PanelManagementTeacher extends JPanel {
         btnSave.setBounds(677, 318, 85, 21);
         contentPane.add(btnSave);
 
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(SystemColor.textHighlight);
-        menuBar.setBounds(0, 0, 772, 22);
-        contentPane.add(menuBar);
 
         JButton btnResetPassword = new JButton("Reset password");
         btnResetPassword.setBounds(551, 318, 116, 21);
